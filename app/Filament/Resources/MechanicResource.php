@@ -18,12 +18,13 @@ class MechanicResource extends Resource
     protected static ?string $model = Mechanic::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
+    protected static ?string $navigationGroup = 'People';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+
             ]);
     }
 

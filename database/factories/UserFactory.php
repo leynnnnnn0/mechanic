@@ -2,9 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Enum\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Enum;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -24,9 +26,17 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'first_name' => fake()->name(),
+            'last_name' => fake()->lastName(),
+            'date_of_birth' => fake()->date(),
+            'street_address' => fake()->streetAddress(),
+            'city' => fake()->city(),
+            'barangay' => fake()->word(),
+            'state_or_province' => $this->faker->word(),
+            'postal_code' => fake()->postcode(),
+            'phone_number' => fake()->phoneNumber(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
+            'role' => $this->faker->randomElement(Role::cases()),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];

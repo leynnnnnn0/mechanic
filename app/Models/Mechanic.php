@@ -23,4 +23,14 @@ class Mechanic extends Model
         'phone_number',
         'password'
     ];
+
+    public function cars()
+    {
+        return $this->belongsToMany(Car::class);
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }
