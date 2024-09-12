@@ -14,6 +14,7 @@ class Appointment extends Model
         'user_id',
         'car_id',
         'service_type',
+        'date_and_time',
         'description',
         'additional_notes',
         'is_emergency',

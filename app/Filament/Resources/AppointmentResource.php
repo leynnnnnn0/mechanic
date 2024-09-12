@@ -74,7 +74,7 @@ class AppointmentResource extends Resource
                             ->options(Service::class)
                             ->searchable()
                             ->required(),
-                        DateTimePicker::make('date_and_time'),
+                        DateTimePicker::make('date_and_time')->required(),
                         TextArea::make('description'),
                         TextArea::make('additional_notes'),
                         Group::make()
@@ -119,6 +119,7 @@ class AppointmentResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

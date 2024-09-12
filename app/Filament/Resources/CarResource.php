@@ -32,7 +32,7 @@ class CarResource extends Resource
                         ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->first_name} {$record->last_name}")
                         ->searchable(['first_name', 'last_name'])
                         ->live()
-                        ->label('Customer')
+                        ->label('Owner')
                         ->required(),
                     Forms\Components\TextInput::make('make')->required(),
                     Forms\Components\TextInput::make('model')->required(),
