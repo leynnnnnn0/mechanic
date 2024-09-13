@@ -11,6 +11,7 @@ use App\Models\AppointmentAttachment;
 use App\Models\Car;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Radio;
@@ -19,6 +20,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Components\View;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -40,70 +42,71 @@ class AppointmentResource extends Resource
     {
         return $form
             ->schema([
-                // First Step
                 Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make('First Step')
-                    ->schema([
-                        Forms\Components\TextInput::make('appointment_number')
-                            ->default('AN-' . random_int(100000, 999999))
-                            ->disabled()
-                            ->dehydrated()
-                            ->required()
-                            ->maxLength(32)
-                            ->label('Appointment Number')
-                            ->unique(Appointment::class, 'id', ignoreRecord: true)
-                            ->columnSpanFull(),
-                        Forms\Components\Select::make('user_id')
-                            ->relationship('user')
-                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->first_name} {$record->last_name}")
-                            ->searchable(['first_name', 'last_name'])
-                            ->live()
-                            ->label('Customer')
-                            ->required(),
-                        Forms\Components\Select::make('car_id')
-                            ->options(fn(Get $get): \Illuminate\Support\Collection => Car::query()
-                                ->where('user_id', $get('user_id'))
-                                ->get()
-                                ->mapWithKeys(function ($car) {
-                                    return [$car->id => "{$car->make} {$car->model} - {$car->color} ({$car->year})"];
-                                }))
-                            ->preload()
-                            ->searchable(['make', 'model', 'color', 'year'])
-                            ->label('Car')
-                            ->required(),
-                        Forms\Components\Select::make('service_type')
-                            ->options(Service::class)
-                            ->searchable()
-                            ->required(),
-//                        DateTimePicker::make('date_and_time')->required(),
-                        TextArea::make('description'),
-                        TextArea::make('additional_notes'),
-                        Group::make()
-                        ->relationship('attachments')
-                        ->schema([
-                            Forms\Components\FileUpload::make('file_path')
-                                ->label('Attachment')
-                                ->disk('public')
-                                ->directory('appointment-attachments')
-                                ->columnSpanFull()
-                        ]),
-                        Radio::make('is_emergency')
-                            ->label('Is Emergency?')
-                            ->boolean()
-                            ->required()
-                            ->inline(),
-                        Radio::make('to_be_towed')
-                            ->boolean()
-                            ->label('Needs To be Towed?')
-                            ->required()
-                            ->inline(),
-                    ])->columns(2),
+                    // First Step
+//                    Forms\Components\Wizard\Step::make('First Step')
+//                    ->schema([
+//                        Forms\Components\TextInput::make('appointment_number')
+//                            ->default('AN-' . random_int(100000, 999999))
+//                            ->disabled()
+//                            ->dehydrated()
+//                            ->required()
+//                            ->maxLength(32)
+//                            ->label('Appointment Number')
+//                            ->unique(Appointment::class, 'id', ignoreRecord: true)
+//                            ->columnSpanFull(),
+//                        Forms\Components\Select::make('user_id')
+//                            ->relationship('user')
+//                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->first_name} {$record->last_name}")
+//                            ->searchable(['first_name', 'last_name'])
+//                            ->live()
+//                            ->label('Customer')
+//                            ->required(),
+//                        Forms\Components\Select::make('car_id')
+//                            ->options(fn(Get $get): \Illuminate\Support\Collection => Car::query()
+//                                ->where('user_id', $get('user_id'))
+//                                ->get()
+//                                ->mapWithKeys(function ($car) {
+//                                    return [$car->id => "{$car->make} {$car->model} - {$car->color} ({$car->year})"];
+//                                }))
+//                            ->preload()
+//                            ->searchable(['make', 'model', 'color', 'year'])
+//                            ->label('Car')
+//                            ->required(),
+//                        Forms\Components\Select::make('service_type')
+//                            ->options(Service::class)
+//                            ->searchable()
+//                            ->required(),
+////                        DateTimePicker::make('date_and_time')->required(),
+//                        TextArea::make('description'),
+//                        TextArea::make('additional_notes'),
+//                        Group::make()
+//                        ->relationship('attachments')
+//                        ->schema([
+//                            Forms\Components\FileUpload::make('file_path')
+//                                ->label('Attachment')
+//                                ->disk('public')
+//                                ->directory('appointment-attachments')
+//                                ->columnSpanFull()
+//                        ]),
+//                        Radio::make('is_emergency')
+//                            ->label('Is Emergency?')
+//                            ->boolean()
+//                            ->required()
+//                            ->inline(),
+//                        Radio::make('to_be_towed')
+//                            ->boolean()
+//                            ->label('Needs To be Towed?')
+//                            ->required()
+//                            ->inline(),
+//                    ])->columns(2),
 
                     // Second Step
                     Forms\Components\Wizard\Step::make('Second Step')
                     ->schema([
-
-                    ]),
+                        DatePicker::make('date'),
+                        View::make('Components.date-picker')->label('Select date and time')
+                    ])->columns(2),
                     Forms\Components\Wizard\Step::make('Third Step')
                         ->schema([
 
