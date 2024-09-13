@@ -40,8 +40,9 @@ class AppointmentResource extends Resource
     {
         return $form
             ->schema([
+                // First Step
                 Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make('Appointment Details')
+                    Forms\Components\Wizard\Step::make('First Step')
                     ->schema([
                         Forms\Components\TextInput::make('appointment_number')
                             ->default('AN-' . random_int(100000, 999999))
@@ -74,7 +75,7 @@ class AppointmentResource extends Resource
                             ->options(Service::class)
                             ->searchable()
                             ->required(),
-                        DateTimePicker::make('date_and_time')->required(),
+//                        DateTimePicker::make('date_and_time')->required(),
                         TextArea::make('description'),
                         TextArea::make('additional_notes'),
                         Group::make()
@@ -85,7 +86,7 @@ class AppointmentResource extends Resource
                                 ->disk('public')
                                 ->directory('appointment-attachments')
                                 ->columnSpanFull()
-                        ])->columnSpanFull(),
+                        ]),
                         Radio::make('is_emergency')
                             ->label('Is Emergency?')
                             ->boolean()
@@ -97,7 +98,19 @@ class AppointmentResource extends Resource
                             ->required()
                             ->inline(),
                     ])->columns(2),
-                ])->columnSpanFull()
+
+                    // Second Step
+                    Forms\Components\Wizard\Step::make('Second Step')
+                    ->schema([
+
+                    ]),
+                    Forms\Components\Wizard\Step::make('Third Step')
+                        ->schema([
+
+                        ])
+
+                ])->columnSpanFull(),
+
             ]);
     }
 
