@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enum\Service;
+use App\Filament\Forms\Components\AppointmentSummary;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Models\Appointment;
 use App\Models\Car;
@@ -14,6 +15,8 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -115,10 +118,6 @@ class AppointmentResource extends Resource
                             ])
                             ->required(),
                     ])->columns(2),
-                    Forms\Components\Wizard\Step::make('Third Step')
-                        ->schema([
-
-                        ])
 
                 ])->columnSpanFull()
                     ->submitAction(new HtmlString(Blade::render(<<<BLADE
@@ -129,6 +128,24 @@ class AppointmentResource extends Resource
                                                             Submit
                                                         </x-filament::button>
                                                     BLADE))),
+
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('appointment_number'),
+                TextEntry::make('user.full_name')->label('Client Name'),
+                TextEntry::make('car.car_details')->label('Car Details'),
+                TextEntry::make('service_type')->label('Service Type'),
+                TextEntry::make('description')->label('Description'),
+                TextEntry::make('additional_notes')->label('Additional Notes'),
+                TextEntry::make('emergency')->label('Is Emergency?'),
+                TextEntry::make('towed')->label('Needs To be Towed?'),
+                TextEntry::make('appointment_date')->label('Appointment Date'),
+                TextEntry::make('appointment_time')->label('Appointment Time'),
 
             ]);
     }
