@@ -15,6 +15,7 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -29,7 +30,6 @@ use Random\RandomException;
 class AppointmentResource extends Resource
 {
     protected static ?string $model = Appointment::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-queue-list';
     protected static ?string $navigationGroup = 'Shop';
 
@@ -146,6 +146,7 @@ class AppointmentResource extends Resource
                 TextEntry::make('towed')->label('Needs To be Towed?'),
                 TextEntry::make('appointment_date')->label('Appointment Date'),
                 TextEntry::make('appointment_time')->label('Appointment Time'),
+                ImageEntry::make('attachments.file_path')->label('Attachment'),
 
             ]);
     }

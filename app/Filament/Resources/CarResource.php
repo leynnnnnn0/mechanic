@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CarResource\Pages;
 use App\Filament\Resources\CarResource\RelationManagers;
+use App\Http\Controllers\Api\CarDetail;
 use App\Models\Car;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -34,9 +35,15 @@ class CarResource extends Resource
                         ->live()
                         ->label('Owner')
                         ->required(),
-                    Forms\Components\TextInput::make('make')->required(),
+                    Forms\Components\Select::make('make')
+                        ->options(CarDetail::getCarMakes())
+                        ->searchable()
+                        ->required(),
                     Forms\Components\TextInput::make('model')->required(),
-                    Forms\Components\TextInput::make('year')->required(),
+                    Forms\Components\Select::make('year')
+                        ->options(CarDetail::getCarYears())
+                        ->searchable()
+                        ->required(),
                     Forms\Components\TextInput::make('license_plate')->required(),
                     Forms\Components\TextInput::make('color')->required(),
                 ])->columns(2)
