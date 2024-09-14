@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enum\Role;
 use App\Enum\Service;
 use App\Filament\Resources\AppointmentResource\Pages;
+use App\Http\Controllers\Api\CarDetail;
 use App\Models\Appointment;
 use App\Models\Car;
 use Filament\Actions\CreateAction;
@@ -60,6 +61,7 @@ class AppointmentResource extends Resource
                             ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->first_name} {$record->last_name}")
                             ->searchable(['first_name', 'last_name'])
                             ->live()
+                            ->reactive()
                             ->label('Customer')
                             ->required()
                             ->createOptionForm([
@@ -103,7 +105,30 @@ class AppointmentResource extends Resource
                             ->preload()
                             ->searchable(['make', 'model', 'color', 'year'])
                             ->label('Car')
-                            ->required(),
+                            ->required()
+                            ->createOptionForm([
+                                Forms\Components\Section::make('Car Details')->schema([
+                                    Forms\Components\Select::make('make')
+                                        ->options(CarDetail::getCarMakes())
+                                        ->searchable()
+                                        ->required(),
+                                    Forms\Components\TextInput::make('model')->required(),
+                                    Forms\Components\Select::make('year')
+                                        ->options(CarDetail::getCarYears())
+                                        ->required(),
+                                    Forms\Components\TextInput::make('license_plate')->required(),
+                                    Forms\Components\TextInput::make('color')->required(),
+                                ])->columns(2)
+                            ])
+                            ->createOptionUsing(function (array $data) {
+                                return Car::create($data);
+                            })
+                            ->createOptionAction(function (Action $action) {
+                                return $action
+                                    ->modalHeading('Create Car')
+                                    ->modalSubmitActionLabel('Create Car')
+                                    ->modalWidth('lg');
+                            }),
                         Forms\components\Select::make('service_type')
                             ->options(Service::class)
                             ->searchable()

@@ -47,6 +47,11 @@ class User extends Authenticatable
         return $this->first_name . ' ' . $this->last_name;
     }
 
+    public function cars()
+    {
+        return $this->hasMany(Car::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
