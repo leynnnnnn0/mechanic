@@ -22,6 +22,7 @@ class CarFactory extends Factory
             'model' => $this->faker->userName,
             'year' => $this->faker->year(),
             'color' => $this->faker->colorName(),
+            'license_plate' => $this->faker->isbn13(),
         ];
     }
 }

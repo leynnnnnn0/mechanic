@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('appointment_attachments', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Appointment::class)->constrained()->cascadeOnDelete();
-            $table->string('file_path');
+            $table->string('file_path')->nullable();
             $table->timestamps();
         });
     }

@@ -23,7 +23,8 @@ return new class extends Migration
             $table->string('additional_notes')->nullable();
             $table->boolean('is_emergency');
             $table->boolean('to_be_towed');
-            $table->dateTime('date_and_time');
+            $table->date('appointment_date');
+            $table->string('appointment_time');
             $table->timestamps();
         });
     }

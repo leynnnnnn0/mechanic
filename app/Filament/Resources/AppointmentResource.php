@@ -25,6 +25,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 use Ramsey\Collection\Collection;
 use Random\RandomException;
 
@@ -104,7 +106,7 @@ class AppointmentResource extends Resource
                     // Second Step
                     Forms\Components\Wizard\Step::make('Second Step')
                     ->schema([
-                        DatePicker::make('date')->required(),
+                        DatePicker::make('appointment_date')->required()->label('Appointment Date'),
                         Forms\Components\Select::make('appointment_time')
                             ->label('Appointment Time')
                             ->options([
@@ -124,7 +126,15 @@ class AppointmentResource extends Resource
 
                         ])
 
-                ])->columnSpanFull(),
+                ])->columnSpanFull()
+                    ->submitAction(new HtmlString(Blade::render(<<<BLADE
+                                                        <x-filament::button
+                                                            type="submit"
+                                                            size="sm"
+                                                        >
+                                                            Submit
+                                                        </x-filament::button>
+                                                    BLADE))),
 
             ]);
     }
