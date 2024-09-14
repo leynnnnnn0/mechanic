@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\Role;
 use App\Enum\Service;
-use App\Filament\Forms\Components\AppointmentSummary;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Models\Appointment;
 use App\Models\Car;
@@ -20,6 +20,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
@@ -60,7 +61,38 @@ class AppointmentResource extends Resource
                             ->searchable(['first_name', 'last_name'])
                             ->live()
                             ->label('Customer')
-                            ->required(),
+                            ->required()
+                            ->createOptionForm([
+                                Forms\Components\Section::make('Personal Details')->schema([
+                                    Forms\Components\TextInput::make('first_name'),
+                                    Forms\Components\TextInput::make('middle_name'),
+                                    Forms\Components\TextInput::make('last_name'),
+                                    Forms\Components\DatePicker::make('date_of_birth'),
+                                ])->columns(2),
+                                Forms\Components\Section::make('Contact Details')->schema([
+                                    Forms\Components\TextInput::make('email')->email(),
+                                    Forms\Components\TextInput::make('phone_number'),
+                                ])->columns(2),
+                                Forms\Components\Section::make('Address Details')->schema([
+                                    Forms\Components\TextInput::make('street_address')->columnSpan(2),
+                                    Forms\Components\TextInput::make('city'),
+                                    Forms\Components\TextInput::make('barangay'),
+                                    Forms\Components\TextInput::make('state_or_province'),
+                                    Forms\Components\TextInput::make('postal_code'),
+                                ])->columns(2),
+                                Forms\Components\Section::make('Others')->schema([
+                                    Forms\Components\TextInput::make('password')->password(),
+                                    Forms\Components\Select::make('role')
+                                        ->options(Role::class)
+                                        ->required()
+                                ])->columns(2),
+                            ])
+                            ->createOptionAction(function (Action $action) {
+                                return $action
+                                    ->modalHeading('Create customer')
+                                    ->modalSubmitActionLabel('Create customer')
+                                    ->modalWidth('lg');
+                            }),
                         Forms\components\Select::make('car_id')
                             ->options(fn(Get $get): Collection => Car::query()
                                 ->where('user_id', $get('user_id'))
