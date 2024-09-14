@@ -2,17 +2,13 @@
 
 namespace App\Filament\Resources;
 
-use App\Enum\Boolean;
 use App\Enum\Service;
 use App\Filament\Resources\AppointmentResource\Pages;
-use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
-use App\Models\AppointmentAttachment;
 use App\Models\Car;
-use App\Models\User;
+use Filament\Actions\CreateAction;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
@@ -20,14 +16,11 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Forms\Components\View;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
-use Ramsey\Collection\Collection;
 use Random\RandomException;
 
 class AppointmentResource extends Resource
@@ -40,6 +33,7 @@ class AppointmentResource extends Resource
     /**
      * @throws RandomException
      */
+
     public static function form(Form $form): Form
     {
         return $form
@@ -65,7 +59,7 @@ class AppointmentResource extends Resource
                             ->label('Customer')
                             ->required(),
                         Forms\components\Select::make('car_id')
-                            ->options(fn(Get $get): \Illuminate\Support\Collection => Car::query()
+                            ->options(fn(Get $get): Collection => Car::query()
                                 ->where('user_id', $get('user_id'))
                                 ->get()
                                 ->mapWithKeys(function ($car) {
