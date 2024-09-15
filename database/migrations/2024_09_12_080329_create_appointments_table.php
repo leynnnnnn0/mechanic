@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('to_be_towed');
             $table->date('appointment_date');
             $table->string('appointment_time');
+            $table->string('status');
             $table->timestamps();
         });
     }

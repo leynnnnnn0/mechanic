@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\AppointmentStatus;
 use App\Enum\Role;
 use App\Enum\Service;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Http\Controllers\Api\CarDetail;
 use App\Models\Appointment;
 use App\Models\Car;
+use Carbon\Carbon;
 use Filament\Actions\CreateAction;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -44,9 +46,11 @@ class AppointmentResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
-//                     First Step
+                    //First Step
                     Forms\components\Wizard\Step::make('First Step')
                     ->schema([
+                        Forms\Components\Hidden::make('status')->default('pending'),
+
                         Forms\components\TextInput::make('appointment_number')
                             ->default('AN-' . random_int(100000, 999999))
                             ->disabled()
@@ -56,6 +60,7 @@ class AppointmentResource extends Resource
                             ->label('Appointment Number')
                             ->unique(Appointment::class, 'id', ignoreRecord: true)
                             ->columnSpanFull(),
+
                         Forms\components\Select::make('user_id')
                             ->relationship('user')
                             ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->first_name} {$record->last_name}")
@@ -71,17 +76,21 @@ class AppointmentResource extends Resource
                                     Forms\Components\TextInput::make('last_name'),
                                     Forms\Components\DatePicker::make('date_of_birth'),
                                 ])->columns(2),
+
                                 Forms\Components\Section::make('Contact Details')->schema([
                                     Forms\Components\TextInput::make('email')->email(),
                                     Forms\Components\TextInput::make('phone_number'),
                                 ])->columns(2),
+
                                 Forms\Components\Section::make('Address Details')->schema([
-                                    Forms\Components\TextInput::make('street_address')->columnSpan(2),
+                                    Forms\Components\TextInput::make('street_address')
+                                        ->columnSpan(2),
                                     Forms\Components\TextInput::make('city'),
                                     Forms\Components\TextInput::make('barangay'),
                                     Forms\Components\TextInput::make('state_or_province'),
                                     Forms\Components\TextInput::make('postal_code'),
                                 ])->columns(2),
+
                                 Forms\Components\Section::make('Others')->schema([
                                     Forms\Components\TextInput::make('password')->password(),
                                     Forms\Components\Select::make('role')
@@ -95,6 +104,7 @@ class AppointmentResource extends Resource
                                     ->modalSubmitActionLabel('Create customer')
                                     ->modalWidth('lg');
                             }),
+
                         Forms\components\Select::make('car_id')
                             ->options(fn(Get $get): Collection => Car::query()
                                 ->where('user_id', $get('user_id'))
@@ -112,12 +122,19 @@ class AppointmentResource extends Resource
                                         ->options(CarDetail::getCarMakes())
                                         ->searchable()
                                         ->required(),
-                                    Forms\Components\TextInput::make('model')->required(),
+
+                                    Forms\Components\TextInput::make('model')
+                                        ->required(),
+
                                     Forms\Components\Select::make('year')
                                         ->options(CarDetail::getCarYears())
                                         ->required(),
-                                    Forms\Components\TextInput::make('license_plate')->required(),
-                                    Forms\Components\TextInput::make('color')->required(),
+
+                                    Forms\Components\TextInput::make('license_plate')
+                                        ->required(),
+
+                                    Forms\Components\TextInput::make('color')
+                                        ->required(),
                                 ])->columns(2)
                             ])
                             ->createOptionUsing(function (array $data) {
@@ -178,14 +195,13 @@ class AppointmentResource extends Resource
 
                 ])->columnSpanFull()
                     ->submitAction(new HtmlString(Blade::render(<<<BLADE
-                                                        <x-filament::button
-                                                            type="submit"
-                                                            size="sm"
-                                                        >
-                                                            Submit
-                                                        </x-filament::button>
-                                                    BLADE))),
-
+                                        <x-filament::button
+                                        type="submit"
+                                        size="sm"
+                                        >
+                                        Submit
+                                        </x-filament::button>
+                                        BLADE))),
             ]);
     }
 
@@ -201,9 +217,11 @@ class AppointmentResource extends Resource
                 TextEntry::make('additional_notes')->label('Additional Notes'),
                 TextEntry::make('emergency')->label('Is Emergency?'),
                 TextEntry::make('towed')->label('Needs To be Towed?'),
-                TextEntry::make('appointment_date')->label('Appointment Date'),
                 TextEntry::make('appointment_time')->label('Appointment Time'),
                 ImageEntry::make('attachments.file_path')->label('Attachment'),
+                TextEntry::make('status')
+                    ->badge()
+                    ->color(fn(string $state): string => AppointmentStatus::from($state)->getColor()),
 
             ]);
     }
@@ -214,18 +232,34 @@ class AppointmentResource extends Resource
             ->columns([
                 TextColumn::make('appointment_number'),
                 TextColumn::make('user.full_name')->label('Customer Name'),
-                TextColumn::make('user.email')
-                    ->label('Email')
-                    ->icon('heroicon-o-envelope'),
                 TextColumn::make('service_type'),
-                TextColumn::make('date_and_time')->label('Appointment Date')
+                TextColumn::make('status')->badge()
+                    ->formatStateUsing(fn(string $state) => AppointmentStatus::from($state)->getLabel())
+                    ->color(fn(string $state): string => AppointmentStatus::from($state)->getColor()),
+                TextColumn::make('appointment_date')
+                    ->formatStateUsing(fn(string $state) => Carbon::parse($state)->format('F d, Y'))
+                    ->label('Appointment Date')
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('Confirm')
+                ->action(function (Appointment $appointment) {
+                    $appointment->status = AppointmentStatus::CONFIRMED;
+                    $appointment->save();
+                })
+                ->color(AppointmentStatus::CONFIRMED->getColor())
+                ->icon('heroicon-o-check'),
+
+                Tables\Actions\Action::make('Cancel')
+                    ->action(function (Appointment $appointment) {
+                        $appointment->status = AppointmentStatus::CANCELLED;
+                        $appointment->save();
+                    })
+                    ->color(AppointmentStatus::CANCELLED->getColor())
+                    ->icon('heroicon-o-x-mark'),
+
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

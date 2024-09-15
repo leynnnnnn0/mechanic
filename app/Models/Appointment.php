@@ -19,7 +19,8 @@ class Appointment extends Model
         'description',
         'additional_notes',
         'is_emergency',
-        'to_be_towed'
+        'to_be_towed',
+        'status'
     ];
 
     public function getAppointmentTimeAttribute()
