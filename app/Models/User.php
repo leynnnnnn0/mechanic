@@ -42,6 +42,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function serviceJobs()
+    {
+        return $this->hasManyThrough(ServiceJob::class, Appointment::class);
+    }
+
     public function getFullNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;

@@ -28,6 +28,11 @@ class Car extends Model
         return $this->hasMany(Appointment::class);
     }
 
+    public function serviceJob()
+    {
+        return $this->hasOne(ServiceJob::class);
+    }
+
     public function getCarDetailsAttribute()
     {
         return "$this->make $this->model($this->year)";

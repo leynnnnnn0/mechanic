@@ -23,20 +23,6 @@ class Appointment extends Model
         'status'
     ];
 
-    public function getAppointmentTimeAttribute()
-    {
-        return match ($this->attributes['appointment_time']) {
-            '08:00-09:00' => '8:00 am - 9:00 am',
-            '09:00-10:00' => '9:00 am - 10:00 am',
-            '10:00-11:00' => '10:00 am - 11:00 am',
-            '11:00-12:00' => '11:00 am - 12:00 pm',
-            '13:00-14:00' => '1:00 pm - 2:00 pm',
-            '14:00-15:00' => '2:00 pm - 3:00 pm',
-            '15:00-16:00' => '3:00 pm - 4:00 pm',
-            '16:00-17:00' => '4:00 pm - 5:00 pm',
-        };
-    }
-
     public function getDescriptionAttribute()
     {
         return $this->description ?? 'None';

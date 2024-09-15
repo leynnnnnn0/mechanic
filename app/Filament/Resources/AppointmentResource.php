@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enum\AppointmentStatus;
 use App\Enum\Role;
 use App\Enum\Service;
+use App\Enum\TimeSlot;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\Widgets\AppointmentOverview;
 use App\Http\Controllers\Api\CarDetail;
@@ -20,8 +21,11 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Pages\SubNavigationPosition;
+use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Forms\Components\Actions\Action;
@@ -38,6 +42,7 @@ class AppointmentResource extends Resource
     protected static ?string $model = Appointment::class;
     protected static ?string $navigationIcon = 'heroicon-o-queue-list';
     protected static ?string $navigationGroup = 'Shop';
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
 
     /**
@@ -52,8 +57,6 @@ class AppointmentResource extends Resource
                     //First Step
                     Forms\components\Wizard\Step::make('First Step')
                     ->schema([
-                        Forms\Components\Hidden::make('status')->default('pending'),
-
                         Forms\components\TextInput::make('appointment_number')
                             ->default('AN-' . random_int(100000, 999999))
                             ->disabled()
@@ -181,30 +184,21 @@ class AppointmentResource extends Resource
                     Forms\Components\Wizard\Step::make('Second Step')
                     ->schema([
                         DatePicker::make('appointment_date')->required()->label('Appointment Date'),
-                        Forms\Components\Select::make('appointment_time')
-                            ->label('Appointment Time')
-                            ->options([
-                                '08:00-09:00' => '8:00 am - 9:00 am',
-                                '09:00-10:00' => '9:00 am - 10:00 am',
-                                '10:00-11:00' => '10:00 am - 11:00 am',
-                                '11:00-12:00' => '11:00 am - 12:00 pm',
-                                '13:00-14:00' => '1:00 pm - 2:00 pm',
-                                '14:00-15:00' => '2:00 pm - 3:00 pm',
-                                '15:00-16:00' => '3:00 pm - 4:00 pm',
-                                '16:00-17:00' => '4:00 pm - 5:00 pm',
-                            ])
+
+                        Forms\Components\ToggleButtons::make('appointment_time')
+                            ->options(TimeSlot::class)
+                            ->inline()
                             ->required(),
+
+                        Forms\Components\ToggleButtons::make('status')
+                            ->options(AppointmentStatus::class)
+                            ->inline()
+                            ->default('pending')
+                            ->hidden(fn (Get $get, string $context): bool => $context !== 'edit')
+                            ->required()
                     ])->columns(2),
 
                 ])->columnSpanFull()
-                    ->submitAction(new HtmlString(Blade::render(<<<BLADE
-                                        <x-filament::button
-                                        type="submit"
-                                        size="sm"
-                                        >
-                                        Submit
-                                        </x-filament::button>
-                                        BLADE))),
             ]);
     }
 
@@ -212,20 +206,21 @@ class AppointmentResource extends Resource
     {
         return $infolist
             ->schema([
-                TextEntry::make('appointment_number'),
-                TextEntry::make('user.full_name')->label('Client Name'),
-                TextEntry::make('car.car_details')->label('Car Details'),
-                TextEntry::make('service_type')->label('Service Type'),
-                TextEntry::make('description')->label('Description'),
-                TextEntry::make('additional_notes')->label('Additional Notes'),
-                TextEntry::make('emergency')->label('Is Emergency?'),
-                TextEntry::make('towed')->label('Needs To be Towed?'),
-                TextEntry::make('appointment_time')->label('Appointment Time'),
-                TextEntry::make('status')
-                    ->badge()
-                    ->color(fn(string $state): string => AppointmentStatus::from($state)->getColor()),
-                ImageEntry::make('attachments.file_path')->label('Attachment'),
-
+                Section::make()->schema([
+                    TextEntry::make('appointment_number'),
+                    TextEntry::make('user.full_name')->label('Client Name'),
+                    TextEntry::make('car.car_details')->label('Car Details'),
+                    TextEntry::make('service_type')->label('Service Type'),
+                    TextEntry::make('description')->label('Description'),
+                    TextEntry::make('additional_notes')->label('Additional Notes'),
+                    TextEntry::make('emergency')->label('Is Emergency?'),
+                    TextEntry::make('towed')->label('Needs To be Towed?'),
+                    TextEntry::make('appointment_time')->label('Appointment Time'),
+                    TextEntry::make('status')
+                        ->badge()
+                        ->color(fn(string $state): string => AppointmentStatus::from($state)->getColor()),
+                    ImageEntry::make('attachments.file_path')->label('Attachment'),
+                ])->columns(2)
             ]);
     }
 
@@ -257,6 +252,17 @@ class AppointmentResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
+
+                Tables\Actions\Action::make('Work Started')
+                    ->action(function (Appointment $appointment) {
+                        $appointment->status = AppointmentStatus::WORK_STARTED;
+                        $appointment->save();
+                    })
+                    ->url(fn (Appointment $appointment) => self::getUrl('create-service-job', ['record' => $appointment]))
+                    ->visible(fn(Appointment $appointment):bool => $appointment->status === 'confirmed')
+                    ->icon('heroicon-o-flag'),
+
                 Tables\Actions\Action::make('Confirm')
                 ->action(function (Appointment $appointment) {
                     $appointment->status = AppointmentStatus::CONFIRMED;
@@ -274,8 +280,6 @@ class AppointmentResource extends Resource
                     ->color(AppointmentStatus::CANCELLED->getColor())
                     ->visible(fn(Appointment $appointment):bool => $appointment->status !== 'cancelled')
                     ->icon('heroicon-o-x-mark'),
-
-                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -297,6 +301,15 @@ class AppointmentResource extends Resource
             'index' => Pages\ListAppointments::route('/'),
             'create' => Pages\CreateAppointment::route('/create'),
             'edit' => Pages\EditAppointment::route('/{record}/edit'),
+            'view'=> Pages\ViewAppointmentDetails::route('/{record}'),
+            'create-service-job' => Pages\CreateServiceJob::route('/{record}/create-service-job'),
         ];
+    }
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewAppointmentDetails::class,
+            Pages\EditAppointment::class
+        ]);
     }
 }
