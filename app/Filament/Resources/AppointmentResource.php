@@ -153,7 +153,7 @@ class AppointmentResource extends Resource
                             ->options(Service::class)
                             ->searchable()
                             ->required(),
-//                        DateTimePicker::make('date_and_time')->required(),
+
                         TextArea::make('description'),
                         TextArea::make('additional_notes'),
                         Group::make()
@@ -221,10 +221,10 @@ class AppointmentResource extends Resource
                 TextEntry::make('emergency')->label('Is Emergency?'),
                 TextEntry::make('towed')->label('Needs To be Towed?'),
                 TextEntry::make('appointment_time')->label('Appointment Time'),
-                ImageEntry::make('attachments.file_path')->label('Attachment'),
                 TextEntry::make('status')
                     ->badge()
                     ->color(fn(string $state): string => AppointmentStatus::from($state)->getColor()),
+                ImageEntry::make('attachments.file_path')->label('Attachment'),
 
             ]);
     }
@@ -275,7 +275,7 @@ class AppointmentResource extends Resource
                     ->visible(fn(Appointment $appointment):bool => $appointment->status !== 'cancelled')
                     ->icon('heroicon-o-x-mark'),
 
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

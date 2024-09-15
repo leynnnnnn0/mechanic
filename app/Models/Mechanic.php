@@ -24,6 +24,11 @@ class Mechanic extends Model
         'password'
     ];
 
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
     public function cars()
     {
         return $this->belongsToMany(Car::class);

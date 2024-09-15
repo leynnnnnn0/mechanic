@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\Role;
+use App\Enum\Specialization;
 use App\Filament\Resources\MechanicResource\Pages;
 use App\Filament\Resources\MechanicResource\RelationManagers;
 use App\Models\Mechanic;
@@ -10,8 +12,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MechanicResource extends Resource
 {
@@ -24,21 +24,66 @@ class MechanicResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make('Personal Details')->schema([
+                    Forms\Components\TextInput::make('first_name')
+                       ->required(),
 
+                    Forms\Components\TextInput::make('middle_name'),
+
+                    Forms\Components\TextInput::make('last_name')
+                        ->required(),
+
+                    Forms\Components\DatePicker::make('date_of_birth')
+                        ->required(),
+                ])->columns(2),
+
+                Forms\Components\Section::make('Professional Details')->schema([
+                    Forms\Components\Select::make('specialization')
+                        ->options(Specialization::class)
+                        ->required(),
+                ])->columns(2),
+
+                Forms\Components\Section::make('Contact Details')->schema([
+                    Forms\Components\TextInput::make('email')->email(),
+                    Forms\Components\TextInput::make('phone_number'),
+                ])->columns(2),
+
+                Forms\Components\Section::make('Address Details')->schema([
+                    Forms\Components\TextInput::make('street_address')
+                        ->columnSpan(2),
+                    Forms\Components\TextInput::make('city'),
+                    Forms\Components\TextInput::make('barangay'),
+                    Forms\Components\TextInput::make('state_or_province'),
+                    Forms\Components\TextInput::make('postal_code'),
+                ])->columns(2),
+
+                Forms\Components\Section::make('Others')->schema([
+                    Forms\Components\TextInput::make('password')->password()->revealable(),
+                ])->columns(2),
             ]);
     }
+
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('full_name'),
+                Tables\Columns\TextColumn::make('email')
+                    ->icon('heroicon-o-envelope'),
+                Tables\Columns\TextColumn::make('phone_number')
+                    ->icon('heroicon-o-phone'),
+                Tables\Columns\TextColumn::make('specialization')
+                ->badge()
+
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
