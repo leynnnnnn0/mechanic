@@ -250,7 +250,8 @@ class AppointmentResource extends Resource
                     $appointment->save();
                 })
                 ->color(AppointmentStatus::CONFIRMED->getColor())
-                ->icon('heroicon-o-check'),
+                ->icon('heroicon-o-check')
+                ->visible(fn(Appointment $appointment):bool => $appointment->status !== 'cancelled' && $appointment->status !== 'confirmed'),
 
                 Tables\Actions\Action::make('Cancel')
                     ->action(function (Appointment $appointment) {
@@ -258,6 +259,7 @@ class AppointmentResource extends Resource
                         $appointment->save();
                     })
                     ->color(AppointmentStatus::CANCELLED->getColor())
+                    ->visible(fn(Appointment $appointment):bool => $appointment->status !== 'cancelled')
                     ->icon('heroicon-o-x-mark'),
 
                 Tables\Actions\DeleteAction::make(),
