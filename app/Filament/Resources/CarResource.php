@@ -54,11 +54,12 @@ class CarResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('user.full_name')->label('Owner'),
-                TextColumn::make('make'),
-                TextColumn::make('model'),
-                TextColumn::make('year'),
-                TextColumn::make('license_plate'),
+                TextColumn::make('user.full_name')->label('Owner')
+                    ->searchable(['first_name', 'last_name']),
+                TextColumn::make('make')->searchable(),
+                TextColumn::make('model')->searchable(),
+                TextColumn::make('year')->searchable(),
+                TextColumn::make('license_plate')->searchable(),
             ])
             ->filters([
                 //
