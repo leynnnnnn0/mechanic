@@ -56,149 +56,152 @@ class AppointmentResource extends Resource
                 Forms\Components\Wizard::make([
                     //First Step
                     Forms\components\Wizard\Step::make('First Step')
-                    ->schema([
-                        Forms\components\TextInput::make('appointment_number')
-                            ->default('AN-' . random_int(100000, 999999))
-                            ->disabled()
-                            ->dehydrated()
-                            ->required()
-                            ->maxLength(32)
-                            ->label('Appointment Number')
-                            ->unique(Appointment::class, 'id', ignoreRecord: true)
-                            ->columnSpanFull(),
-
-                        Forms\components\Select::make('user_id')
-                            ->relationship('user')
-                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->first_name} {$record->last_name}")
-                            ->searchable(['first_name', 'last_name'])
-                            ->live()
-                            ->reactive()
-                            ->label('Customer')
-                            ->required()
-                            ->createOptionForm([
-                                Forms\Components\Section::make('Personal Details')->schema([
-                                    Forms\Components\TextInput::make('first_name'),
-                                    Forms\Components\TextInput::make('middle_name'),
-                                    Forms\Components\TextInput::make('last_name'),
-                                    Forms\Components\DatePicker::make('date_of_birth'),
-                                ])->columns(2),
-
-                                Forms\Components\Section::make('Contact Details')->schema([
-                                    Forms\Components\TextInput::make('email')->email(),
-                                    Forms\Components\TextInput::make('phone_number'),
-                                ])->columns(2),
-
-                                Forms\Components\Section::make('Address Details')->schema([
-                                    Forms\Components\TextInput::make('street_address')
-                                        ->columnSpan(2),
-                                    Forms\Components\TextInput::make('city'),
-                                    Forms\Components\TextInput::make('barangay'),
-                                    Forms\Components\TextInput::make('state_or_province'),
-                                    Forms\Components\TextInput::make('postal_code'),
-                                ])->columns(2),
-
-                                Forms\Components\Section::make('Others')->schema([
-                                    Forms\Components\TextInput::make('password')->password(),
-                                    Forms\Components\Select::make('role')
-                                        ->options(Role::class)
-                                        ->required()
-                                ])->columns(2),
-                            ])
-                            ->createOptionAction(function (Action $action) {
-                                return $action
-                                    ->modalHeading('Create customer')
-                                    ->modalSubmitActionLabel('Create customer')
-                                    ->modalWidth('lg');
-                            }),
-
-                        Forms\components\Select::make('car_id')
-                            ->options(fn(Get $get): Collection => Car::query()
-                                ->where('user_id', $get('user_id'))
-                                ->get()
-                                ->mapWithKeys(function ($car) {
-                                    return [$car->id => "{$car->make} {$car->model} - {$car->color} ({$car->year})"];
-                                }))
-                            ->preload()
-                            ->searchable(['make', 'model', 'color', 'year'])
-                            ->label('Car')
-                            ->required()
-                            ->createOptionForm([
-                                Forms\Components\Section::make('Car Details')->schema([
-                                    Forms\Components\Select::make('make')
-                                        ->options(CarDetail::getCarMakes())
-                                        ->searchable()
-                                        ->required(),
-
-                                    Forms\Components\TextInput::make('model')
-                                        ->required(),
-
-                                    Forms\Components\Select::make('year')
-                                        ->options(CarDetail::getCarYears())
-                                        ->required(),
-
-                                    Forms\Components\TextInput::make('license_plate')
-                                        ->required(),
-
-                                    Forms\Components\TextInput::make('color')
-                                        ->required(),
-                                ])->columns(2)
-                            ])
-                            ->createOptionUsing(function (array $data) {
-                                return Car::create($data);
-                            })
-                            ->createOptionAction(function (Action $action) {
-                                return $action
-                                    ->modalHeading('Create Car')
-                                    ->modalSubmitActionLabel('Create Car')
-                                    ->modalWidth('lg');
-                            }),
-                        Forms\components\Select::make('service_type')
-                            ->options(Service::class)
-                            ->searchable()
-                            ->required(),
-
-                        TextArea::make('description'),
-                        TextArea::make('additional_notes'),
-                        Group::make()
-                        ->relationship('attachments')
                         ->schema([
-                            Forms\components\FileUpload::make('file_path')
-                                ->label('Attachment')
-                                ->disk('public')
-                                ->directory('appointment-attachments')
-                                ->columnSpanFull()
-                        ]),
-                        Radio::make('is_emergency')
-                            ->label('Is Emergency?')
-                            ->boolean()
-                            ->required()
-                            ->inline(),
-                        Radio::make('to_be_towed')
-                            ->boolean()
-                            ->label('Needs To be Towed?')
-                            ->required()
-                            ->inline(),
-                    ])->columns(2),
+                            Forms\components\TextInput::make('appointment_number')
+                                ->default('AN-' . random_int(100000, 999999))
+                                ->disabled()
+                                ->dehydrated()
+                                ->required()
+                                ->maxLength(32)
+                                ->label('Appointment Number')
+                                ->unique(Appointment::class, 'id', ignoreRecord: true)
+                                ->columnSpanFull(),
+
+                            Forms\components\Select::make('user_id')
+                                ->relationship('user')
+                                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->first_name} {$record->last_name}")
+                                ->searchable(['first_name', 'last_name'])
+                                ->live()
+                                ->reactive()
+                                ->label('Customer')
+                                ->required()
+                                ->createOptionForm([
+                                    Forms\Components\Section::make('Personal Details')->schema([
+                                        Forms\Components\TextInput::make('first_name'),
+                                        Forms\Components\TextInput::make('middle_name'),
+                                        Forms\Components\TextInput::make('last_name'),
+                                        Forms\Components\DatePicker::make('date_of_birth'),
+                                    ])->columns(2),
+
+                                    Forms\Components\Section::make('Contact Details')->schema([
+                                        Forms\Components\TextInput::make('email')->email(),
+                                        Forms\Components\TextInput::make('phone_number'),
+                                    ])->columns(2),
+
+                                    Forms\Components\Section::make('Address Details')->schema([
+                                        Forms\Components\TextInput::make('street_address')
+                                            ->columnSpan(2),
+                                        Forms\Components\TextInput::make('city'),
+                                        Forms\Components\TextInput::make('barangay'),
+                                        Forms\Components\TextInput::make('state_or_province'),
+                                        Forms\Components\TextInput::make('postal_code'),
+                                    ])->columns(2),
+
+                                    Forms\Components\Section::make('Others')->schema([
+                                        Forms\Components\TextInput::make('password')->password(),
+                                        Forms\Components\Select::make('role')
+                                            ->options(Role::class)
+                                            ->required()
+                                    ])->columns(2),
+                                ])
+                                ->createOptionAction(function (Action $action) {
+                                    return $action
+                                        ->modalHeading('Create customer')
+                                        ->modalSubmitActionLabel('Create customer')
+                                        ->modalWidth('lg');
+                                }),
+
+                            Forms\components\Select::make('car_id')
+                                ->options(fn(Get $get): Collection => Car::query()
+                                    ->where('user_id', $get('user_id'))
+                                    ->get()
+                                    ->mapWithKeys(function ($car) {
+                                        return [$car->id => "{$car->make} {$car->model} - {$car->color} ({$car->year})"];
+                                    }))
+                                ->preload()
+                                ->searchable(['make', 'model', 'color', 'year'])
+                                ->label('Car')
+                                ->required()
+                                ->createOptionForm([
+                                    Forms\Components\Section::make('Car Details')->schema([
+                                        Forms\Components\Select::make('make')
+                                            ->options(CarDetail::getCarMakes())
+                                            ->searchable()
+                                            ->required(),
+
+                                        Forms\Components\TextInput::make('model')
+                                            ->required(),
+
+                                        Forms\Components\Select::make('year')
+                                            ->options(CarDetail::getCarYears())
+                                            ->required(),
+
+                                        Forms\Components\TextInput::make('license_plate')
+                                            ->required(),
+
+                                        Forms\Components\TextInput::make('color')
+                                            ->required(),
+                                    ])->columns(2)
+                                ])
+                                ->createOptionUsing(function (array $data) {
+                                    return Car::create($data);
+                                })
+                                ->createOptionAction(function (Action $action) {
+                                    return $action
+                                        ->modalHeading('Create Car')
+                                        ->modalSubmitActionLabel('Create Car')
+                                        ->modalWidth('lg');
+                                }),
+                            Forms\components\Select::make('service_type')
+                                ->options(Service::class)
+                                ->searchable()
+                                ->required(),
+
+                            TextArea::make('description'),
+                            TextArea::make('additional_notes'),
+                            Group::make()
+                                ->relationship('attachments')
+                                ->schema([
+                                    Forms\components\FileUpload::make('file_path')
+                                        ->label('Attachment')
+                                        ->disk('public')
+                                        ->directory('appointment-attachments')
+                                        ->columnSpanFull()
+                                ]),
+                            Radio::make('is_emergency')
+                                ->label('Is Emergency?')
+                                ->boolean()
+                                ->required()
+                                ->inline(),
+                            Radio::make('to_be_towed')
+                                ->boolean()
+                                ->label('Needs To be Towed?')
+                                ->required()
+                                ->inline(),
+                        ])->columns(2),
 
                     // Second Step
                     Forms\Components\Wizard\Step::make('Second Step')
-                    ->schema([
-                        Forms\Components\Hidden::make('status')->default('pending'),
+                        ->schema([
+                            Forms\Components\Hidden::make('status')->default('pending'),
 
-                        DatePicker::make('appointment_date')->required()->label('Appointment Date'),
-
-                        Forms\Components\ToggleButtons::make('appointment_time')
-                            ->options(TimeSlot::class)
-                            ->inline()
-                            ->required(),
-
-                        Forms\Components\ToggleButtons::make('status')
-                            ->options(AppointmentStatus::class)
-                            ->inline()
-                            ->default('pending')
-                            ->hidden(fn (Get $get, string $context): bool => $context !== 'edit')
+                            DatePicker::make('appointment_date')
+                            ->native(false)
                             ->required()
-                    ])->columns(2),
+                            ->label('Appointment Date'),
+
+                            Forms\Components\ToggleButtons::make('appointment_time')
+                                ->options(TimeSlot::class)
+                                ->inline()
+                                ->required(),
+
+                            Forms\Components\ToggleButtons::make('status')
+                                ->options(AppointmentStatus::class)
+                                ->inline()
+                                ->default('pending')
+                                ->hidden(fn(Get $get, string $context): bool => $context !== 'edit')
+                                ->required()
+                        ])->columns(2),
 
                 ])->columnSpanFull()->submitAction(new HtmlString(Blade::render(<<<BLADE
                                         <x-filament::button
@@ -264,18 +267,18 @@ class AppointmentResource extends Resource
                 Tables\Actions\ViewAction::make(),
 
                 Tables\Actions\Action::make('Work Started')
-                    ->url(fn (Appointment $appointment) => self::getUrl('create-service-job', ['record' => $appointment]))
-                    ->visible(fn(Appointment $appointment):bool => $appointment->status === 'confirmed')
+                    ->url(fn(Appointment $appointment) => self::getUrl('create-service-job', ['record' => $appointment]))
+                    ->visible(fn(Appointment $appointment): bool => $appointment->status === 'confirmed')
                     ->icon('heroicon-o-flag'),
 
                 Tables\Actions\Action::make('Confirm')
-                ->action(function (Appointment $appointment) {
-                    $appointment->status = AppointmentStatus::CONFIRMED;
-                    $appointment->save();
-                })
-                ->color(AppointmentStatus::CONFIRMED->getColor())
-                ->icon('heroicon-o-check')
-                ->visible(fn(Appointment $appointment):bool => $appointment->status !== 'cancelled' && $appointment->status !== 'confirmed'&& $appointment->status !== 'work started'),
+                    ->action(function (Appointment $appointment) {
+                        $appointment->status = AppointmentStatus::CONFIRMED;
+                        $appointment->save();
+                    })
+                    ->color(AppointmentStatus::CONFIRMED->getColor())
+                    ->icon('heroicon-o-check')
+                    ->visible(fn(Appointment $appointment): bool => $appointment->status !== 'cancelled' && $appointment->status !== 'confirmed' && $appointment->status !== 'work started'),
 
                 Tables\Actions\Action::make('Cancel')
                     ->action(function (Appointment $appointment) {
@@ -283,7 +286,7 @@ class AppointmentResource extends Resource
                         $appointment->save();
                     })
                     ->color(AppointmentStatus::CANCELLED->getColor())
-                    ->visible(fn(Appointment $appointment):bool => $appointment->status !== 'cancelled')
+                    ->visible(fn(Appointment $appointment): bool => $appointment->status !== 'cancelled')
                     ->icon('heroicon-o-x-mark'),
             ])
             ->bulkActions([
@@ -306,7 +309,7 @@ class AppointmentResource extends Resource
             'index' => Pages\ListAppointments::route('/'),
             'create' => Pages\CreateAppointment::route('/create'),
             'edit' => Pages\EditAppointment::route('/{record}/edit'),
-            'view'=> Pages\ViewAppointmentDetails::route('/{record}'),
+            'view' => Pages\ViewAppointmentDetails::route('/{record}'),
             'create-service-job' => Pages\CreateServiceJob::route('/{record}/create-service-job'),
         ];
     }

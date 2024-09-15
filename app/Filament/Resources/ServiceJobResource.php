@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\AppointmentResource\Widgets\AppointmentOverview;
 use App\Filament\Resources\ServiceJobResource\Pages;
-use App\Filament\Resources\ServiceJobResource\RelationManagers;
+use App\Filament\Resources\ServiceJobResource\Widgets\ServiceJobOverview;
 use App\Models\ServiceJob;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -37,14 +39,15 @@ class ServiceJobResource extends Resource
                 Tables\Columns\TextColumn::make('mechanic.fullName'),
                 Tables\Columns\TextColumn::make('service_type')->badge(),
                 Tables\Columns\TextColumn::make('status')->badge(),
-                Tables\Columns\TextColumn::make('start_date'),
-
+                Tables\Columns\TextColumn::make('start_date')
+                    ->formatStateUsing(fn($state) => Carbon::make($state)->format('F d, Y')),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -59,6 +62,7 @@ class ServiceJobResource extends Resource
             //
         ];
     }
+
 
     public static function getPages(): array
     {
