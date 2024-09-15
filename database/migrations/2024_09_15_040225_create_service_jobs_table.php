@@ -20,8 +20,8 @@ return new class extends Migration
             $table->id();
             $table->string('service_job_id')->unique();
             $table->foreignIdFor(Appointment::class);
-            $table->string(Car::class);
-            $table->string(Mechanic::class);
+            $table->foreignIdFor(Car::class);
+            $table->foreignIdFor(Mechanic::class);
             $table->string('status');
             $table->string('service_type');
             $table->date('start_date')->nullable();

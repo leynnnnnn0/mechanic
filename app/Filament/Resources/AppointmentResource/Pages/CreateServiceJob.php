@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\AppointmentResource\Pages;
 
+use App\Enum\AppointmentStatus;
+use App\Enum\PaymentStatus;
 use App\Enum\RepairStatus;
 use App\Enum\Service;
 use App\Filament\Resources\AppointmentResource;
@@ -16,7 +18,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
-use Filament\Pages\Actions\Action;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\Page;
@@ -44,11 +47,8 @@ class CreateServiceJob extends Page
             Section::make('Service Details')->schema([
                 TextInput::make('service_job_id')
                     ->default('SN-' . random_int(100000, 999999))
-                    ->disabled()
                     ->required()
-                    ->maxLength(32)
-                    ->label('Service Job Number')
-                    ->unique(ServiceJob::class, 'id', ignoreRecord: true),
+                    ->label('Service Job Number'),
 
                 TextInput::make('appointment_number')
                     ->default($this->record->appointment_number)
@@ -83,16 +83,16 @@ class CreateServiceJob extends Page
                 Textarea::make('description'),
                 Textarea::make('notes'),
 
+            ])->columns(2),
+
+            Section::make('Payment Details')->schema([
                 TextInput::make('estimated_cost'),
                 TextInput::make('final_cost'),
-                TextInput::make('payment_status'),
-
-
-
-
-
-
-            ])->columns(2)
+                Select::make('payment_status')
+                    ->options(PaymentStatus::class)
+                    ->default('awaiting_payment')
+                    ->required(),
+            ])->columns(2),
         ])->statePath('data');
 
     }
@@ -102,14 +102,24 @@ class CreateServiceJob extends Page
         return [
             Action::make('save')
                 ->label('Create Service Job')
-                ->submit('save'),
+                ->submit('save')->successNotification(
+                    Notification::make()
+                        ->success()
+                        ->title('Service Job has been created')
+                        ->body('Service Job has been created')
+                ),
         ];
     }
 
     public function save(): void
     {
         $data = $this->form->getState();
-        $this->notify('success', 'Service job created successfully');
+        $data['appointment_id'] = $this->record->id;
+        $data['car_id'] = $this->record->car_id;
+        ServiceJob::updateOrCreate($data);
+        $record = Appointment::find($this->record->id);
+        $record->status = AppointmentStatus::WORK_STARTED;
+        $record->save();
         $this->redirect(AppointmentResource::getUrl('view', ['record' => $this->record]));
     }
 

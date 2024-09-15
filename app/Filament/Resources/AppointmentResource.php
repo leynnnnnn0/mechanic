@@ -183,6 +183,8 @@ class AppointmentResource extends Resource
                     // Second Step
                     Forms\Components\Wizard\Step::make('Second Step')
                     ->schema([
+                        Forms\Components\Hidden::make('status')->default('pending'),
+
                         DatePicker::make('appointment_date')->required()->label('Appointment Date'),
 
                         Forms\Components\ToggleButtons::make('appointment_time')
@@ -198,7 +200,14 @@ class AppointmentResource extends Resource
                             ->required()
                     ])->columns(2),
 
-                ])->columnSpanFull()
+                ])->columnSpanFull()->submitAction(new HtmlString(Blade::render(<<<BLADE
+                                        <x-filament::button
+                                        type="submit"
+                                        size="sm"
+                                        >
+                                        Submit
+                                        </x-filament::button>
+                                        BLADE))),
             ]);
     }
 
@@ -255,10 +264,6 @@ class AppointmentResource extends Resource
                 Tables\Actions\ViewAction::make(),
 
                 Tables\Actions\Action::make('Work Started')
-                    ->action(function (Appointment $appointment) {
-                        $appointment->status = AppointmentStatus::WORK_STARTED;
-                        $appointment->save();
-                    })
                     ->url(fn (Appointment $appointment) => self::getUrl('create-service-job', ['record' => $appointment]))
                     ->visible(fn(Appointment $appointment):bool => $appointment->status === 'confirmed')
                     ->icon('heroicon-o-flag'),
@@ -270,7 +275,7 @@ class AppointmentResource extends Resource
                 })
                 ->color(AppointmentStatus::CONFIRMED->getColor())
                 ->icon('heroicon-o-check')
-                ->visible(fn(Appointment $appointment):bool => $appointment->status !== 'cancelled' && $appointment->status !== 'confirmed'),
+                ->visible(fn(Appointment $appointment):bool => $appointment->status !== 'cancelled' && $appointment->status !== 'confirmed'&& $appointment->status !== 'work started'),
 
                 Tables\Actions\Action::make('Cancel')
                     ->action(function (Appointment $appointment) {
