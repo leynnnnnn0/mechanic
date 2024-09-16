@@ -18,6 +18,11 @@ class Car extends Model
         'color',
     ];
 
+    public function getCarDetailsAttribute()
+    {
+        return "$this->make $this->make $this->year";
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

@@ -22,14 +22,14 @@ class Appointment extends Model
         'status'
     ];
 
-    public function getDescriptionAttribute()
+    public function getDisplayDescriptionAttribute()
     {
-        return $this->description ?? 'None';
+        return $this->attributes['description'] ?? 'none';
     }
 
-    public function getAdditionalNotesAttribute()
+    public function getDisplayNotesAttribute()
     {
-        return $this->additional_notes ?? 'None';
+        return $this->attributes['additional_notes'] ?? 'none';
     }
     public function getEmergencyAttribute()
     {

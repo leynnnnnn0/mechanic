@@ -70,7 +70,7 @@ class AppointmentResource extends Resource
 
                             Forms\components\Select::make(name: 'customer_id')
                                 ->relationship('car.customer')
-                                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->full_name}")
+                                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->first_name} {$record->last_name}")
                                 ->searchable(['first_name', 'last_name'])
                                 ->live()
                                 ->reactive()
@@ -227,18 +227,18 @@ class AppointmentResource extends Resource
             ->schema([
                 Section::make()->schema([
                     TextEntry::make('appointment_number'),
-                    TextEntry::make('user.full_name')->label('Client Name'),
+                    TextEntry::make('car.customer.full_name')->label('Client Name'),
                     TextEntry::make('car.car_details')->label('Car Details'),
                     TextEntry::make('service_type')->label('Service Type'),
-                    TextEntry::make('description')->label('Description'),
-                    TextEntry::make('additional_notes')->label('Additional Notes'),
+                    TextEntry::make('display_description')->label('Description'),
+                    TextEntry::make('display_notes')->label('Additional Notes'),
                     TextEntry::make('emergency')->label('Is Emergency?'),
                     TextEntry::make('towed')->label('Needs To be Towed?'),
                     TextEntry::make('appointment_time')->label('Appointment Time'),
                     TextEntry::make('status')
                         ->badge()
                         ->color(fn(string $state): string => AppointmentStatus::from($state)->getColor()),
-                    ImageEntry::make('attachments.file_path')->label('Attachment'),
+                    ImageEntry::make('attachments.attachment')->label('Attachment'),
                 ])->columns(2)
             ]);
     }
