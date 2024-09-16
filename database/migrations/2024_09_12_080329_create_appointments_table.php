@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->string('appointment_number')->unique();
-            $table->foreignIdFor(User::class)->constrained();
             $table->foreignIdFor(Car::class)->constrained();
             $table->string('service_type');
             $table->string('description')->nullable();

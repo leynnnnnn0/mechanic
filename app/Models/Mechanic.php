@@ -34,12 +34,9 @@ class Mechanic extends Model
         return $this->hasManyThrough(Car::class, ServiceJob::class);
     }
 
-    public function appointments()
-    {
-        return $this->hasMany(Appointment::class);
-    }
 
-    public function serviceJobs(){
+    public function serviceJobs()
+    {
         return $this->hasMany(ServiceJob::class);
     }
 }

@@ -12,7 +12,8 @@ class CarDetail extends Controller
     {
         $response = Http::get("https://carapi.app/api/years?make=$make&model=$model");
         if ($response->successful()) {
-            return $response->json();
+            $data = $response->json();
+            return array_combine($data, $data);
         }
         return [];
     }

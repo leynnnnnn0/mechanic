@@ -19,9 +19,8 @@ return new class extends Migration
         Schema::create('service_jobs', function (Blueprint $table) {
             $table->id();
             $table->string('service_job_id')->unique();
-            $table->foreignIdFor(Appointment::class);
-            $table->foreignIdFor(Car::class);
             $table->foreignIdFor(Mechanic::class);
+            $table->foreignIdFor(Car::class)->constrained()->cascadeOnDelete();
             $table->string('status');
             $table->string('service_type');
             $table->date('start_date')->nullable();

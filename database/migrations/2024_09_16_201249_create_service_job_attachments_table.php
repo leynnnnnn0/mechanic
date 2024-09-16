@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Appointment;
+use App\Models\ServiceJob;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,9 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('appointment_attachments', function (Blueprint $table) {
+        Schema::create('service_job_attachments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Appointment::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(ServiceJob::class)->constrained()->cascadeOnDelete();
             $table->string('attachment')->nullable();
             $table->timestamps();
         });
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('appointment_attachments');
+        Schema::dropIfExists('service_job_attachments');
     }
 };

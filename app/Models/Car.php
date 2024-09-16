@@ -10,7 +10,7 @@ class Car extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'customer_id',
         'make',
         'model',
         'year',
@@ -18,9 +18,9 @@ class Car extends Model
         'color',
     ];
 
-    public function user()
+    public function customer()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function appointments()
@@ -30,11 +30,6 @@ class Car extends Model
 
     public function serviceJob()
     {
-        return $this->hasOne(ServiceJob::class);
-    }
-
-    public function getCarDetailsAttribute()
-    {
-        return "$this->make $this->model($this->year)";
+        return $this->hasMany(ServiceJob::class);
     }
 }

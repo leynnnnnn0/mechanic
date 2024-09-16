@@ -10,31 +10,28 @@ class ServiceJob extends Model
     use HasFactory;
 
     protected $fillable = [
-      'service_job_id',
-      'appointment_id',
-      'car_id',
-      'mechanic_id',
-      'status',
-      'service_type',
-      'start_date',
-      'end_date',
-      'description',
-      'estimated_cost',
-      'final_cost',
-      'payment_status',
-      'notes'
+        'service_job_id',
+        'car_id',
+        'mechanic_id',
+        'status',
+        'service_type',
+        'start_date',
+        'end_date',
+        'description',
+        'estimated_cost',
+        'final_cost',
+        'payment_status',
+        'notes'
     ];
 
-    public function car(){
+    public function car()
+    {
         return $this->belongsTo(Car::class);
     }
 
-    public function mechanic(){
+    public function mechanic()
+    {
         return $this->belongsTo(Mechanic::class);
-    }
-
-    public function appointment(){
-        return $this->belongsTo(Appointment::class);
     }
 
     public function getFullNameAttribute()
@@ -42,4 +39,8 @@ class ServiceJob extends Model
         return "$this->first_name $this->last_name";
     }
 
+    public function attachments()
+    {
+        return $this->hasMany(ServiceJobAttachment::class);
+    }
 }

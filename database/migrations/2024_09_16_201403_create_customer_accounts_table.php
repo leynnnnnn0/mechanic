@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Appointment;
+use App\Models\Customer;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,10 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('appointment_attachments', function (Blueprint $table) {
+        Schema::create('customer_accounts', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Appointment::class)->constrained()->cascadeOnDelete();
-            $table->string('attachment')->nullable();
+            $table->foreignIdFor(Customer::class)->constrained()->cascadeOnDelete();
+            $table->string('username');
+            $table->string('password');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('appointment_attachments');
+        Schema::dropIfExists('customer_accounts');
     }
 };

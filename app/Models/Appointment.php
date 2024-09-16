@@ -11,7 +11,6 @@ class Appointment extends Model
     protected $fillable = [
         'id',
         'appointment_number',
-        'user_id',
         'car_id',
         'service_type',
         'appointment_date',
@@ -47,13 +46,8 @@ class Appointment extends Model
         return $this->belongsTo(Car::class);
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function attachments()
     {
-        return $this->hasOne(AppointmentAttachment::class);
+        return $this->hasMany(AppointmentAttachment::class);
     }
 }

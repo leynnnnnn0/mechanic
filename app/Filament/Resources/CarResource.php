@@ -24,8 +24,8 @@ class CarResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Car Details')
                     ->schema([
-                        Forms\Components\Select::make('user_id')
-                            ->relationship('user')
+                        Forms\Components\Select::make('customer_id')
+                            ->relationship('customer')
                             ->getOptionLabelFromRecordUsing(fn($record) => "{$record->first_name} {$record->last_name}")
                             ->searchable(['first_name', 'last_name'])
                             ->live()

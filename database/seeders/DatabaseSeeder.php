@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'password' => Hash::make('adminadmin'),
         ]);
-         User::factory(9)->create();
-         Car::factory(10)->create();
+        //  User::factory(9)->create();
+        //  Car::factory(10)->create();
 
     }
 }

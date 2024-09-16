@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AppointmentAttachment extends Model
+class CustomerAccount extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'appointment_id',
-        'attachment',
+        'username',
+        'password'
     ];
 
-    public function appointment()
+    public function customer()
     {
-        return $this->belongsTo(Appointment::class);
+        return $this->belongsTo(Customer::class);
     }
 }

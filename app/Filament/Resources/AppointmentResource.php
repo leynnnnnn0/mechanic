@@ -11,6 +11,7 @@ use App\Filament\Resources\AppointmentResource\Widgets\AppointmentOverview;
 use App\Http\Controllers\Api\CarDetail;
 use App\Models\Appointment;
 use App\Models\Car;
+use App\Models\Customer;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -28,6 +29,8 @@ use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Set;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -63,12 +66,11 @@ class AppointmentResource extends Resource
                                 ->required()
                                 ->maxLength(32)
                                 ->label('Appointment Number')
-                                ->unique(Appointment::class, 'id', ignoreRecord: true)
-                                ->columnSpanFull(),
+                                ->unique(Appointment::class, 'id', ignoreRecord: true),
 
-                            Forms\components\Select::make('user_id')
-                                ->relationship('user')
-                                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->first_name} {$record->last_name}")
+                            Forms\components\Select::make(name: 'customer_id')
+                                ->relationship('car.customer')
+                                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->full_name}")
                                 ->searchable(['first_name', 'last_name'])
                                 ->live()
                                 ->reactive()
@@ -95,14 +97,10 @@ class AppointmentResource extends Resource
                                         Forms\Components\TextInput::make('state_or_province'),
                                         Forms\Components\TextInput::make('postal_code'),
                                     ])->columns(2),
-
-                                    Forms\Components\Section::make('Others')->schema([
-                                        Forms\Components\TextInput::make('password')->password(),
-                                        Forms\Components\Select::make('role')
-                                            ->options(Role::class)
-                                            ->required()
-                                    ])->columns(2),
                                 ])
+                                ->createOptionUsing(function (array $data) {
+                                    return Customer::create($data);
+                                })
                                 ->createOptionAction(function (Action $action) {
                                     return $action
                                         ->modalHeading('Create customer')
@@ -112,10 +110,10 @@ class AppointmentResource extends Resource
 
                             Forms\components\Select::make('car_id')
                                 ->options(fn(Get $get): Collection => Car::query()
-                                    ->where('user_id', $get('user_id'))
+                                    ->where('customer_id', $get('customer_id'))
                                     ->get()
                                     ->mapWithKeys(function ($car) {
-                                        return [$car->id => "{$car->make} {$car->model} - {$car->color} ({$car->year})"];
+                                        return [$car->id => "{$car->make} {$car->model} {$car->year}"];
                                     }))
                                 ->preload()
                                 ->searchable(['make', 'model', 'color', 'year'])
@@ -142,8 +140,11 @@ class AppointmentResource extends Resource
                                             ->required(),
                                     ])->columns(2)
                                 ])
-                                ->createOptionUsing(function (array $data) {
-                                    return Car::create($data);
+                                ->createOptionUsing(function (array $data, Get $get, Set $set) {
+                                    $data['customer_id'] = $get('customer_id');
+                                    $car = Car::create($data);
+                                    $set('car_id', $car->id);
+                                    return $car;
                                 })
                                 ->createOptionAction(function (Action $action) {
                                     return $action
@@ -151,22 +152,15 @@ class AppointmentResource extends Resource
                                         ->modalSubmitActionLabel('Create Car')
                                         ->modalWidth('lg');
                                 }),
+
                             Forms\components\Select::make('service_type')
                                 ->options(Service::class)
                                 ->searchable()
                                 ->required(),
 
-                            TextArea::make('description'),
-                            TextArea::make('additional_notes'),
-                            Group::make()
-                                ->relationship('attachments')
-                                ->schema([
-                                    Forms\components\FileUpload::make('file_path')
-                                        ->label('Attachment')
-                                        ->disk('public')
-                                        ->directory('appointment-attachments')
-                                        ->columnSpanFull()
-                                ]),
+                            TextArea::make('description')->columnSpanFull(),
+                            TextArea::make('additional_notes')->columnSpanFull(),
+
                             Radio::make('is_emergency')
                                 ->label('Is Emergency?')
                                 ->boolean()
@@ -200,6 +194,20 @@ class AppointmentResource extends Resource
                                 ->default('pending')
                                 ->hidden(fn(Get $get, string $context): bool => $context !== 'edit')
                                 ->required()
+                        ])->columns(2),
+
+                    Forms\Components\Wizard\Step::make('Third Step')
+                        ->schema([
+                            Repeater::make('attachments')
+                                ->relationship('attachments')
+                                ->schema([
+                                    Forms\components\FileUpload::make('attachment')
+                                        ->previewable(false)
+                                        ->label('')
+                                        ->disk('public')
+                                        ->directory('appointment-attachments')
+                                        ->columnSpanFull()
+                                ]),
                         ])->columns(2),
 
                 ])->columnSpanFull()->submitAction(new HtmlString(Blade::render(<<<BLADE
@@ -247,7 +255,7 @@ class AppointmentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('appointment_number'),
-                TextColumn::make('user.full_name')->label('Customer Name'),
+                TextColumn::make('car.customer.full_name')->label('Customer Name'),
                 TextColumn::make('service_type'),
                 TextColumn::make('status')->badge()
                     ->formatStateUsing(fn(string $state) => AppointmentStatus::from($state)->getLabel())

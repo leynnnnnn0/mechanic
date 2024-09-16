@@ -27,12 +27,12 @@ class UserResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make('Personal Details')
-                ->schema([
-                    Forms\Components\TextInput::make('first_name')->required()->string()->minLength(2),
-                    Forms\Components\TextInput::make('middle_name'),
-                    Forms\Components\TextInput::make('last_name')->required()->string()->minLength(2),
-                    Forms\Components\DatePicker::make('date_of_birth')->required()->date(),
-                ])->columns(2),
+                    ->schema([
+                        Forms\Components\TextInput::make('first_name')->required()->string()->minLength(2),
+                        Forms\Components\TextInput::make('middle_name'),
+                        Forms\Components\TextInput::make('last_name')->required()->string()->minLength(2),
+                        Forms\Components\DatePicker::make('date_of_birth')->required()->date(),
+                    ])->columns(2),
                 Forms\Components\Section::make('Contact Details')
                     ->schema([
                         Forms\Components\TextInput::make('email')->required()->email(),
@@ -50,16 +50,16 @@ class UserResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('password')
                             ->password()
-                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                            ->required(fn (string $context): bool => $context === 'create')
-                            ->dehydrated(fn ($state) => filled($state))
+                            ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                            ->required(fn(string $context): bool => $context === 'create')
+                            ->dehydrated(fn($state) => filled($state))
                             ->default(function () {
                                 // Generate a random password
                                 return Str::random(10);
                             })->revealable(),
                         Forms\Components\Select::make('role')
-                        ->options(Role::class)
-                        ->native()
+                            ->options(Role::class)
+                            ->native()
                     ])->columns(2)
             ]);
     }
@@ -69,12 +69,12 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('full_name')
-                ->searchable(['first_name', 'last_name'])
-                ->sortable(['first_name', 'last_name']),
+                    ->searchable(['first_name', 'last_name'])
+                    ->sortable(['first_name', 'last_name']),
                 TextColumn::make('email')
-                ->searchable(['email']),
+                    ->searchable(['email']),
                 TextColumn::make('phone_number')
-                ->searchable(['phone_number']),
+                    ->searchable(['phone_number']),
                 TextColumn::make('role')
 
             ])

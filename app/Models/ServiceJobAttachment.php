@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AppointmentAttachment extends Model
+class ServiceJobAttachment extends Model
 {
     use HasFactory;
     protected $fillable = [
@@ -13,8 +13,8 @@ class AppointmentAttachment extends Model
         'attachment',
     ];
 
-    public function appointment()
+    public function serviceJob()
     {
-        return $this->belongsTo(Appointment::class);
+        return $this->belongsTo(ServiceJob::class);
     }
 }
