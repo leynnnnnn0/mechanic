@@ -2,31 +2,79 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AppointmentResource\Widgets\AppointmentOverview;
 use App\Filament\Resources\ServiceJobResource\Pages;
-use App\Filament\Resources\ServiceJobResource\Widgets\ServiceJobOverview;
 use App\Models\ServiceJob;
 use Carbon\Carbon;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Components\Select;
+use App\Models\Mechanic;
+use App\Enum\PaymentStatus;
+use App\Enum\RepairStatus;
+use App\Enum\Service;
+use Filament\Forms\Components\DatePicker;
 
 class ServiceJobResource extends Resource
 {
     protected static ?string $model = ServiceJob::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-flag';
     protected static ?string $navigationGroup = 'Shop';
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Section::make('Service Details')->schema([
+                    TextInput::make('service_job_id')
+                        ->default('SN-' . random_int(100000, 999999))
+                        ->required()
+                        ->label('Service Job Number'),
+
+                    TextInput::make('appointment_number')
+                        ->disabled(),
+
+                    TextInput::make('car_id')
+                        ->label('Car Details')
+                        ->disabled(),
+
+                    Select::make('mechanic_id')
+                        ->options(fn() => Mechanic::query()
+                            ->select('id', 'first_name', 'last_name')
+                            ->get()->mapWithKeys(fn($mechanic) => [$mechanic->id => $mechanic->full_name]))
+                        ->label('Mechanic')
+                        ->required(),
+
+                    ToggleButtons::make('status')
+                        ->options(RepairStatus::class)
+                        ->default('scheduled')
+                        ->inline()
+                        ->required(),
+
+                    Select::make('service_type')
+                        ->options(Service::class)
+                        ->required(),
+
+                    DatePicker::make('start_date'),
+                    DatePicker::make('end_date'),
+
+                    Textarea::make('description'),
+                    Textarea::make('notes'),
+
+                ])->columns(2),
+
+                Section::make('Payment Details')->schema([
+                    TextInput::make('estimated_cost'),
+                    TextInput::make('final_cost'),
+                    Select::make('payment_status')
+                        ->options(PaymentStatus::class)
+                        ->default('awaiting_payment')
+                        ->required(),
+                ])->columns(2),
             ]);
     }
 
@@ -40,7 +88,7 @@ class ServiceJobResource extends Resource
                 Tables\Columns\TextColumn::make('service_type')->badge(),
                 Tables\Columns\TextColumn::make('status')->badge(),
                 Tables\Columns\TextColumn::make('start_date')
-                    ->formatStateUsing(fn($state) => Carbon::make($state)->format('F d, Y')),
+                    ->formatStateUsing(fn($state) => Carbon::make($state)->diffForHumans()),
             ])
             ->filters([
                 //

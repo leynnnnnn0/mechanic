@@ -12,7 +12,6 @@ use App\Http\Controllers\Api\CarDetail;
 use App\Models\Appointment;
 use App\Models\Car;
 use Carbon\Carbon;
-use Filament\Actions\CreateAction;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
@@ -186,9 +185,9 @@ class AppointmentResource extends Resource
                             Forms\Components\Hidden::make('status')->default('pending'),
 
                             DatePicker::make('appointment_date')
-                            ->native(false)
-                            ->required()
-                            ->label('Appointment Date'),
+                                ->native(false)
+                                ->required()
+                                ->label('Appointment Date'),
 
                             Forms\Components\ToggleButtons::make('appointment_time')
                                 ->options(TimeSlot::class)
@@ -254,7 +253,8 @@ class AppointmentResource extends Resource
                     ->formatStateUsing(fn(string $state) => AppointmentStatus::from($state)->getLabel())
                     ->color(fn(string $state): string => AppointmentStatus::from($state)->getColor()),
                 TextColumn::make('appointment_date')
-                    ->formatStateUsing(fn(string $state) => Carbon::parse($state)->format('F d, Y'))
+                    ->formatStateUsing(fn(string $state) =>
+                    Carbon::parse($state)->diffInDays(Carbon::today()) >= 3 ? Carbon::parse($state)->format('F d, Y') : Carbon::parse($state)->diffForHumans())
                     ->label('Appointment Date')
             ])
             ->filters([
