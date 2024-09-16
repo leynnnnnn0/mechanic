@@ -18,7 +18,10 @@ use App\Models\Mechanic;
 use App\Enum\PaymentStatus;
 use App\Enum\RepairStatus;
 use App\Enum\Service;
+use App\Models\Appointment;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 
 class ServiceJobResource extends Resource
 {
@@ -32,21 +35,30 @@ class ServiceJobResource extends Resource
                 Section::make('Service Details')->schema([
                     TextInput::make('service_job_id')
                         ->default('SN-' . random_int(100000, 999999))
+                        ->disabled()
                         ->required()
                         ->label('Service Job Number'),
 
-                    TextInput::make('appointment_number')
-                        ->disabled(),
+                    Select::make('appointment_id')
+                        ->options(fn() => Appointment::query()->select(['id', 'appointment_number'])->get()->pluck('appointment_number', 'id'))
+                        ->live()
+                        ->afterStateUpdated(function (Get $get, Set $set) {
+                            $appointmentId = $get('appointment_id');
+                            $appointment = Appointment::find($appointmentId);
+                            if ($appointment) {
+                                $set('car_id', $appointment->car->carDetails);
+                                $set('service_type', $appointment->service_type);
+                            }
+                        })
+                        ->required(),
 
                     TextInput::make('car_id')
                         ->label('Car Details')
-                        ->disabled(),
+                        ->disabled()
+                        ->required(),
 
-                    Select::make('mechanic_id')
-                        ->options(fn() => Mechanic::query()
-                            ->select('id', 'first_name', 'last_name')
-                            ->get()->mapWithKeys(fn($mechanic) => [$mechanic->id => $mechanic->full_name]))
-                        ->label('Mechanic')
+                    Select::make('service_type')
+                        ->options(Service::class)
                         ->required(),
 
                     ToggleButtons::make('status')
@@ -55,8 +67,11 @@ class ServiceJobResource extends Resource
                         ->inline()
                         ->required(),
 
-                    Select::make('service_type')
-                        ->options(Service::class)
+                    Select::make('mechanic_id')
+                        ->options(fn() => Mechanic::query()
+                            ->select('id', 'first_name', 'last_name')
+                            ->get()->mapWithKeys(fn($mechanic) => [$mechanic->id => $mechanic->full_name]))
+                        ->label('Mechanic')
                         ->required(),
 
                     DatePicker::make('start_date'),
