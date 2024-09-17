@@ -20,7 +20,7 @@ class Car extends Model
 
     public function getCarDetailsAttribute()
     {
-        return "$this->make $this->make $this->year";
+        return "$this->make $this->model $this->year";
     }
 
     public function customer()

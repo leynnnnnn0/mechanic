@@ -50,7 +50,7 @@ class CarResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('user.full_name')->label('Owner')
+                TextColumn::make('customer.full_name')->label('Owner')
                     ->searchable(['first_name', 'last_name']),
                 TextColumn::make('make')->searchable(),
                 TextColumn::make('model')->searchable(),

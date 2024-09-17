@@ -34,6 +34,7 @@ use Filament\Forms\Set;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Mail\Mailables\Content;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
@@ -70,12 +71,21 @@ class AppointmentResource extends Resource
 
                             Forms\components\Select::make(name: 'customer_id')
                                 ->relationship('car.customer')
-                                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->first_name} {$record->last_name}")
+                                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->full_name}")
                                 ->searchable(['first_name', 'last_name'])
                                 ->live()
                                 ->reactive()
                                 ->label('Customer')
                                 ->required()
+                                ->afterStateHydrated(function (Get $get, Set $set) {
+                                    // If editing and customer_id is not set, get it from the car
+                                    if ($get('car_id')) {
+                                        $car = Car::find($get('car_id'));
+                                        if ($car) {
+                                            $set('customer_id', $car->customer_id);
+                                        }
+                                    }
+                                })
                                 ->createOptionForm([
                                     Forms\Components\Section::make('Personal Details')->schema([
                                         Forms\Components\TextInput::make('first_name'),
@@ -113,7 +123,7 @@ class AppointmentResource extends Resource
                                     ->where('customer_id', $get('customer_id'))
                                     ->get()
                                     ->mapWithKeys(function ($car) {
-                                        return [$car->id => "{$car->make} {$car->model} {$car->year}"];
+                                        return [$car->id => "{$car->car_details}"];
                                     }))
                                 ->preload()
                                 ->searchable(['make', 'model', 'color', 'year'])
