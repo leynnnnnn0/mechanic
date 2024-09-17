@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('barangay');
             $table->string('state_or_province');
             $table->string('postal_code');
-            $table->string('email')->unique();
-            $table->string('phone_number');
+            $table->string('email')->unique()->nullable();
+            $table->string('phone_number')->nullable();
             $table->timestamps();
         });
     }

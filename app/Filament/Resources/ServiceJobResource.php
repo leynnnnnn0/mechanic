@@ -18,10 +18,15 @@ use App\Models\Mechanic;
 use App\Enum\PaymentStatus;
 use App\Enum\RepairStatus;
 use App\Enum\Service;
+use App\Http\Controllers\Api\CarDetail;
 use App\Models\Appointment;
+use App\Models\Car;
+use App\Models\Customer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Forms\Components\Actions\Action;
+use Illuminate\Support\Collection;
 
 class ServiceJobResource extends Resource
 {
@@ -36,26 +41,103 @@ class ServiceJobResource extends Resource
                     TextInput::make('service_job_id')
                         ->default('SN-' . random_int(100000, 999999))
                         ->disabled()
+                        ->dehydrated()
                         ->required()
                         ->label('Service Job Number'),
 
-                    Select::make('appointment_id')
-                        ->options(fn() => Appointment::query()->select(['id', 'appointment_number'])->get()->pluck('appointment_number', 'id'))
+                    Select::make(name: 'customer_id')
+                        ->relationship('car.customer')
+                        ->getOptionLabelFromRecordUsing(fn($record) => "{$record->first_name} {$record->last_name}")
+                        ->searchable(['first_name', 'last_name'])
                         ->live()
-                        ->afterStateUpdated(function (Get $get, Set $set) {
-                            $appointmentId = $get('appointment_id');
-                            $appointment = Appointment::find($appointmentId);
-                            if ($appointment) {
-                                $set('car_id', $appointment->car->carDetails);
-                                $set('service_type', $appointment->service_type);
+                        ->reactive()
+                        ->label('Customer')
+                        ->required()
+                        ->afterStateHydrated(function (Get $get, Set $set) {
+                            // If editing and customer_id is not set, get it from the car
+                            if ($get('car_id')) {
+                                $car = Car::find($get('car_id'));
+                                if ($car) {
+                                    $set('customer_id', $car->customer_id);
+                                }
                             }
                         })
-                        ->required(),
+                        ->createOptionForm([
+                            Section::make('Personal Details')->schema([
+                                TextInput::make('first_name'),
+                                TextInput::make('middle_name'),
+                                TextInput::make('last_name'),
+                                DatePicker::make('date_of_birth'),
+                            ])->columns(2),
 
-                    TextInput::make('car_id')
-                        ->label('Car Details')
-                        ->disabled()
-                        ->required(),
+                            Section::make('Contact Details')->schema([
+                                TextInput::make('email')->email(),
+                                TextInput::make('phone_number'),
+                            ])->columns(2),
+
+                            Section::make('Address Details')->schema([
+                                TextInput::make('street_address')
+                                    ->columnSpan(2),
+                                TextInput::make('city'),
+                                TextInput::make('barangay'),
+                                TextInput::make('state_or_province'),
+                                TextInput::make('postal_code'),
+                            ])->columns(2),
+                        ])
+                        ->createOptionUsing(function (array $data) {
+                            return Customer::create($data);
+                        })
+                        ->createOptionAction(function (Action $action) {
+                            return $action
+                                ->modalHeading('Create customer')
+                                ->modalSubmitActionLabel('Create customer')
+                                ->modalWidth('lg');
+                        }),
+
+                    Select::make('car_id')
+                        ->options(fn(Get $get) => Car::query()
+                            ->where('customer_id', $get('customer_id'))
+                            ->get()
+                            ->mapWithKeys(function ($car) {
+                                return [$car->id => "{$car->car_details}"];
+                            }))
+                        ->preload()
+                        ->searchable(['make', 'model', 'color', 'year'])
+                        ->label('Car')
+                        ->required()
+                        ->createOptionForm([
+                            Section::make('Car Details')->schema([
+                                Select::make('make')
+                                    ->options(CarDetail::getCarMakes())
+                                    ->searchable()
+                                    ->required(),
+
+                                TextInput::make('model')
+                                    ->required(),
+
+                                Select::make('year')
+                                    ->options(CarDetail::getCarYears())
+                                    ->required(),
+
+                                TextInput::make('license_plate')
+                                    ->required(),
+
+                                TextInput::make('color')
+                                    ->required(),
+                            ])->columns(2)
+                        ])
+                        ->createOptionUsing(function (array $data, Get $get, Set $set) {
+                            $data['customer_id'] = $get('customer_id');
+                            $car = Car::create($data);
+                            $set('car_id', $car->id);
+                            return $car;
+                        })
+                        ->createOptionAction(function (Action $action) {
+                            return $action
+                                ->modalHeading('Create Car')
+                                ->modalSubmitActionLabel('Create Car')
+                                ->modalWidth('lg');
+                        }),
 
                     Select::make('service_type')
                         ->options(Service::class)

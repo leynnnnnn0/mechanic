@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Enum\Role;
+
 use App\Enum\Specialization;
 use App\Filament\Resources\MechanicResource\Pages;
-use App\Filament\Resources\MechanicResource\RelationManagers;
 use App\Models\Mechanic;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -26,7 +25,7 @@ class MechanicResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Personal Details')->schema([
                     Forms\Components\TextInput::make('first_name')
-                       ->required(),
+                        ->required(),
 
                     Forms\Components\TextInput::make('middle_name'),
 
@@ -44,21 +43,21 @@ class MechanicResource extends Resource
                 ])->columns(2),
 
                 Forms\Components\Section::make('Contact Details')->schema([
-                    Forms\Components\TextInput::make('email')->email(),
-                    Forms\Components\TextInput::make('phone_number'),
+                    Forms\Components\TextInput::make('email')->email()->required(),
+                    Forms\Components\TextInput::make('phone_number')->required(),
                 ])->columns(2),
 
                 Forms\Components\Section::make('Address Details')->schema([
                     Forms\Components\TextInput::make('street_address')
-                        ->columnSpan(2),
-                    Forms\Components\TextInput::make('city'),
-                    Forms\Components\TextInput::make('barangay'),
-                    Forms\Components\TextInput::make('state_or_province'),
-                    Forms\Components\TextInput::make('postal_code'),
+                        ->columnSpan(2)->required(),
+                    Forms\Components\TextInput::make('city')->required(),
+                    Forms\Components\TextInput::make('barangay')->required(),
+                    Forms\Components\TextInput::make('state_or_province')->required(),
+                    Forms\Components\TextInput::make('postal_code')->required(),
                 ])->columns(2),
 
                 Forms\Components\Section::make('Others')->schema([
-                    Forms\Components\TextInput::make('password')->password()->revealable(),
+                    Forms\Components\TextInput::make('password')->password()->revealable()->required(),
                 ])->columns(2),
             ]);
     }
@@ -74,7 +73,7 @@ class MechanicResource extends Resource
                 Tables\Columns\TextColumn::make('phone_number')
                     ->icon('heroicon-o-phone'),
                 Tables\Columns\TextColumn::make('specialization')
-                ->badge()
+                    ->badge()
 
             ])
             ->filters([
