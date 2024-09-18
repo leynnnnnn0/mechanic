@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('middle_name')->nullable();
             $table->string('last_name');
-            $table->string('date_of_birth');
-            $table->string('street_address');
-            $table->string('city');
-            $table->string('barangay');
-            $table->string('state_or_province');
-            $table->string('postal_code');
+            $table->string('date_of_birth')->nullable();
+            $table->string('street_address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('barangay')->nullable();
+            $table->string('state_or_province')->nullable();
+            $table->string('postal_code')->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('phone_number')->nullable();
             $table->timestamps();
