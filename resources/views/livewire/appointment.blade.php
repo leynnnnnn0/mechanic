@@ -7,6 +7,7 @@
     <div class="min-h-screen p-6 bg-gray-100 flex items-center justify-center">
         <div class="container max-w-screen-lg mx-auto">
             <div>
+
                 <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
 
                     <section class="grid grid-cols-2 gap-5">
@@ -87,10 +88,26 @@
                                 <input type="radio" name="towing">
                             </div>
                         </x-form-input-div>
+                        <x-form-input-div>
+                            <x-label>Appointment Date</x-label>
+                            <x-input type="date" />
+                        </x-form-input-div>
+                        <x-form-input-div>
+                            <x-label>Appointment Time</x-label>
+                            <x-select>
+                                @foreach ($timeSlots as $timeSlot)
+                                <option value="{{ $timeSlot}}">{{ $timeSlot }}</option>
+                                @endforeach
+                            </x-select>
+                        </x-form-input-div>
                     </section>
-                </div>
-            </div>
 
+                    <div class="flex justify-end">
+                        <button class="bg-blue-500 rounded-lg px-5 py-1 text-md text-white font-medium mt-5">Submit</button>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
