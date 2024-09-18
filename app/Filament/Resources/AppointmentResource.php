@@ -7,6 +7,7 @@ use App\Enum\Role;
 use App\Enum\Service;
 use App\Enum\TimeSlot;
 use App\Filament\Resources\AppointmentResource\Pages;
+use App\Filament\Resources\AppointmentResource\Pages\DistanceShower;
 use App\Filament\Resources\AppointmentResource\Widgets\AppointmentOverview;
 use App\Http\Controllers\Api\CarDetail;
 use App\Models\Appointment;
@@ -29,11 +30,11 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\View;
 use Filament\Forms\Set;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Mail\Mailables\Content;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
@@ -56,7 +57,7 @@ class AppointmentResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Wizard::make([
-                    //First Step
+                    // First Step
                     Forms\components\Wizard\Step::make('First Step')
                         ->schema([
                             Forms\components\TextInput::make('appointment_number')
@@ -201,7 +202,7 @@ class AppointmentResource extends Resource
                                 ->inline()
                                 ->default('pending')
                                 ->hidden(fn(Get $get, string $context): bool => $context !== 'edit')
-                                ->required()
+                                ->required(),
                         ])->columns(2),
 
                     Forms\Components\Wizard\Step::make('Third Step')
