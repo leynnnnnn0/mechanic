@@ -127,79 +127,92 @@
             @error('form.phone_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         @elseif($step === 4)
-        <div class="flex justify-between col-span-2">
-            <section>
-                <h1 class="text-xl font-bold">Car Details</h1>
-                <x-form-input-div class="gap-0">
-                    <x-label>Make</x-label>
-                    <strong>{{ $form->make }}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Model</x-label>
-                    <strong>{{ $form->model }}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Year</x-label>
-                    <strong>{{ $form->year }}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Color</x-label>
-                    <strong>{{ $form->color }}</strong>
-                </x-form-input-div>
-            </section>
+        <div class="rounded-sm h-full w-full shadow-md p-10 col-span-2">
+            <div class="grid grid-cols-3 col-span-2 text-gray-900 gap-10">
+                <section class="flex-1">
+                    <div class="flex items-center justify-between border-b border-gray-300 border-dashed pb-5 mb-5">
+                        <h1 class="text-xl font-bold">Car Details</h1>
+                        <button wire:click="goToStep(1)" class="text-blue-500 font-bold text-sm">Edit</button>
+                    </div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Make</x-label>
+                        <strong>{{ $form->make ?? 'none' }}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Model</x-label>
+                        <strong>{{ $form->model ?? 'none' }}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Year</x-label>
+                        <strong>{{ $form->year ?? 'none' }}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Color</x-label>
+                        <strong>{{ $form->color ?? 'none' }}</strong>
+                    </x-form-input-div>
+                </section>
 
-            <section>
-                <h1 class="text-xl font-bold">Appointment Details</h1>
-                <x-form-input-div class="gap-0">
-                    <x-label>Service Type</x-label>
-                    <strong>{{ $form->service_type}}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Is Emergency?</x-label>
-                    <strong>{{ $form->is_emergency == 1 ? 'Yes' : 'No' }}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Needs to be towed?</x-label>
-                    <strong>{{ $form->to_be_towed == 1 ? 'Yes' : 'No' }}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Description</x-label>
-                    <strong>{{ $form->description ?: 'none' }}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Notes</x-label>
-                    <strong>{{ $form->additional_notes ?: 'none' }}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Appointment Date</x-label>
-                    <strong>{{ $form->appointment_date}}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Appointment Time</x-label>
-                    <strong>{{ $form->appointment_time}}</strong>
-                </x-form-input-div>
-            </section>
+                <section class="flex-1">
+                    <div class="border-b border-gray-300 border-dashed pb-5 mb-5 flex items-center justify-between">
+                        <h1 class="text-xl font-bold">Appointment Details</h1>
+                        <button wire:click="goToStep(2)" class="text-blue-500 font-bold text-sm">Edit</button>
+                    </div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Service Type</x-label>
+                        <strong>{{ $form->service_type}}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Is Emergency?</x-label>
+                        <strong>{{ $form->is_emergency ? 'Yes' : 'No' }}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Needs to be towed?</x-label>
+                        <strong>{{ $form->to_be_towed ? 'Yes' : 'No' }}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Description</x-label>
+                        <strong>{{ $form->description ?: 'none' }}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Notes</x-label>
+                        <strong>{{ $form->additional_notes ?: 'none' }}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Appointment Date</x-label>
+                        <strong>{{ $form->appointment_date ?? 'none'}}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Appointment Time</x-label>
+                        <strong>{{ $form->appointment_time ?? 'none'}}</strong>
+                    </x-form-input-div>
+                </section>
 
-            <section>
-                <h1 class="text-xl font-bold">Personal Details</h1>
-                <x-form-input-div class="gap-0">
-                    <x-label>First Name</x-label>
-                    <strong>{{ $form->first_name}}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Last Name</x-label>
-                    <strong>{{ $form->last_name}}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Email</x-label>
-                    <strong>{{ $form->email}}</strong>
-                </x-form-input-div>
-                <x-form-input-div class="gap-0">
-                    <x-label>Phone Number</x-label>
-                    <strong>{{ $form->phone_number }}</strong>
-                </x-form-input-div>
-            </section>
+                <section class="flex-1">
+                    <div class="border-b border-gray-300 border-dashed pb-5 mb-5 flex items-center justify-between">
+                        <h1 class="text-xl font-bold">Personal Details</h1>
+                        <button wire:click="goToStep(3)" class="text-blue-500 font-bold text-sm">Edit</button>
+                    </div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>First Name</x-label>
+                        <strong>{{ $form->first_name ?? 'none'}}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Last Name</x-label>
+                        <strong>{{ $form->last_name ?? 'none'}}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Email</x-label>
+                        <strong>{{ $form->email ?? 'none'}}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Phone Number</x-label>
+                        <strong>{{ $form->phone_number ?? 'none' }}</strong>
+                    </x-form-input-div>
+                </section>
+
+            </div>
         </div>
+
         @endif
         <div class="col-span-2 flex justify-end gap-2">
             @if($step > 1)

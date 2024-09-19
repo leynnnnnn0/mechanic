@@ -7,22 +7,22 @@ use Livewire\Form;
 
 class AppointmentForm extends Form
 {
-    public string $first_name;
-    public string $last_name;
-    public string $email;
+    public string $first_name = '';
+    public string $last_name = '';
+    public string $email = '';
     public string $phone_number;
     public string $make = 'Honda';
     public string $model = 'Civic';
     public string $year = '2022';
     public string $color = 'Red';
-    public string $service_type;
+    public string $service_type = '';
     public string $description = '';
     public string $additional_notes = '';
-    public bool $is_emergency;
-    public bool $to_be_towed;
-    public string $appointment_date;
-    public string $appointment_time;
-    public string $status;
+    public bool $is_emergency = false;
+    public bool $to_be_towed = false;
+    public string $appointment_date = '';
+    public string $appointment_time = '';
+    public string $status = '';
 
     public function carRules()
     {

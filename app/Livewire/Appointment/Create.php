@@ -30,6 +30,12 @@ class Create extends Component
         };
         $this->step += 1;
     }
+
+    public function goToStep($count)
+    {
+        $this->step = $count;
+    }
+    
     public function mount()
     {
         $this->makes = CarDetail::getCarMakes();
