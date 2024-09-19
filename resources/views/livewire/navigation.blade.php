@@ -1,5 +1,5 @@
 <div>
-    <nav class="lg:px-[350px] md:px-[100px] h-24 flex items-center justify-between bg-white">
+    <nav class="lg:px-[100px] md:px-[100px] h-24 flex items-center justify-between bg-white">
         <section class="flex items-center gap-10">
             <h1 class="text-lg font-bold text-blue-500">MECHANIC</h1>
             <div class="space-x-5">

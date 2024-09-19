@@ -1,23 +1,28 @@
 <div class="bg-white rounded shadow-lg h-fit">
     <div class="flex divide-x-2 h-16 border-b border-gray-300">
         <section class="font-bold flex-1 flex items-center justify-center p-5 bg-blue-500">
-            <h1 class="font-bold text-2xl text-white">
+            <h1 class="font-bold text-xl text-white">
                 Car Details
             </h1>
         </section>
         <section class="font-bold flex-1 flex items-center justify-center p-5 {{$step > 1 ? 'bg-blue-500' : 'bg-blue-200'}}">
-            <h1 class="font-bold text-2xl text-white">
+            <h1 class="font-bold text-xl text-white">
                 Appointment Details
             </h1>
         </section>
         <section class="font-bold flex-1 flex items-center justify-center p-5 {{$step > 2 ? 'bg-blue-500' : 'bg-blue-200'}}">
-            <h1 class="font-bold text-2xl text-white">
+            <h1 class="font-bold text-xl text-white">
                 Personal Details
+            </h1>
+        </section>
+        <section class="font-bold flex-1 flex items-center justify-center p-5 {{$step > 3 ? 'bg-blue-500' : 'bg-blue-200'}}">
+            <h1 class="font-bold text-xl text-white">
+                Confirm All Details
             </h1>
         </section>
     </div>
 
-    <div class="grid grid-cols-2 p-5 gap-5">
+    <div class="grid grid-cols-2 p-5 gap-5 w-full">
 
         @if($step === 1)
         <x-form-input-div>
@@ -46,7 +51,7 @@
             <x-label>Service Type</x-label>
             <x-select wire:model="form.service_type">
                 @foreach ($services as $service)
-                <option value="{{ $service }}">{{ $service }}</option>
+                <option value="{{ $service->value }}">{{ $service->name }}</option>
                 @endforeach
             </x-select>
             @error('form.service_type') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -121,15 +126,89 @@
             <x-input wire:model="form.phone_number" />
             @error('form.phone_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
+        @elseif($step === 4)
+        <div class="flex justify-between">
+            <section class="flex-1">
+                <h1 class="text-xl font-bold">Car Details</h1>
+                <x-form-input-div class="gap-0">
+                    <x-label>Make</x-label>
+                    <strong>{{ $form->make }}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Model</x-label>
+                    <strong>{{ $form->model }}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Year</x-label>
+                    <strong>{{ $form->year }}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Color</x-label>
+                    <strong>{{ $form->color }}</strong>
+                </x-form-input-div>
+            </section>
+
+            <section>
+                <h1 class="text-xl font-bold">Appointment Details</h1>
+                <x-form-input-div class="gap-0">
+                    <x-label>Service Type</x-label>
+                    <strong>{{ $form->service_type}}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Is Emergency?</x-label>
+                    <strong>{{ $form->is_emergency == 1 ? 'Yes' : 'No' }}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Needs to be towed?</x-label>
+                    <strong>{{ $form->to_be_towed == 1 ? 'Yes' : 'No' }}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Description</x-label>
+                    <strong>{{ $form->description }}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Notes</x-label>
+                    <strong>{{ $form->additional_notes }}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Appointment Date</x-label>
+                    <strong>{{ $form->appointment_date}}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Appointment Time</x-label>
+                    <strong>{{ $form->appointment_time}}</strong>
+                </x-form-input-div>
+            </section>
+
+            <section>
+                <h1 class="text-xl font-bold">Personal Details</h1>
+                <x-form-input-div class="gap-0">
+                    <x-label>First Name</x-label>
+                    <strong>{{ $form->first_name}}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Last Name</x-label>
+                    <strong>{{ $form->last_name}}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Email</x-label>
+                    <strong>{{ $form->email}}</strong>
+                </x-form-input-div>
+                <x-form-input-div class="gap-0">
+                    <x-label>Phone Number</x-label>
+                    <strong>{{ $form->phone_number }}</strong>
+                </x-form-input-div>
+            </section>
+        </div>
         @endif
         <div class="col-span-2 flex justify-end gap-2">
             @if($step > 1)
             <button wire:click="previousStep" class="px-4 py-1 rounded-lg border border-gray-300 text-black font-bold text-sm">Back</button>
             @endif
-            @if($step < 3)
+            @if($step < 4)
                 <button wire:click="nextStep" class="px-4 py-1 rounded-lg bg-blue-500 text-white font-bold text-sm">Next</button>
                 @else
-                <button wire:click="nextStep" class="px-4 py-1 rounded-lg bg-blue-500 text-white font-bold text-sm">Submit</button>
+                <button wire:click="submit" class="px-4 py-1 rounded-lg bg-blue-500 text-white font-bold text-sm">Submit</button>
                 @endif
         </div>
     </div>

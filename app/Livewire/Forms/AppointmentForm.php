@@ -16,13 +16,43 @@ class AppointmentForm extends Form
     public string $year;
     public string $color;
     public string $service_type;
-    public string $description;
-    public string $additional_notes;
+    public string $description = '';
+    public string $additional_notes = '';
     public bool $is_emergency;
     public bool $to_be_towed;
     public string $appointment_date;
     public string $appointment_time;
     public string $status;
+
+    public function carRules()
+    {
+        return [
+            'make' => 'required',
+            'model' => 'required',
+            'year' => 'required',
+            'color' => 'required',
+        ];
+    }
+
+    public function appointmentRules()
+    {
+        return [
+            'service_type' => ['required'],
+            'is_emergency' => ['required'],
+            'to_be_towed' => ['required'],
+            'appointment_date' => ['required'],
+            'appointment_time' => ['required']
+        ];
+    }
+
+    public function personalInformationRules()
+    {
+        return [
+            'first_name' => ['required'],
+            'last_name' => ['required'],
+            'email' => ['required', 'email'],
+        ];
+    }
 
     public function rules()
     {
