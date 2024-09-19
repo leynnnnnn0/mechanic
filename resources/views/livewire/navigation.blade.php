@@ -6,12 +6,13 @@
                 <a href="/" class="text-sm font-bold" href="#" wire:navigate>Home</a>
                 <a class="text-sm font-bold" href="#">About</a>
                 <a class="text-sm font-bold" href="#">Service</a>
-                <a class="text-sm font-bold" href="#">Track Repair</a>
+                <a class="text-sm font-bold" href="/appointment" wire:navigate>Appointment</a>
+                <a class="text-sm font-bold" href="/track-status" wire:navigate>Track Status</a>
             </div>
         </section>
         <section class="space-x-3">
-            <button class="text-md font-medium">Register</button>
-            <button class="bg-blue-500 rounded-lg px-5 py-1 text-md text-white font-medium">Login</button>
+            <a href="/register" class="text-md font-medium" wire:navigate>Register</a>
+            <a href="/login" class="bg-blue-500 rounded-lg px-5 py-1 text-md text-white font-medium" wire:navigate>Login</a>
         </section>
     </nav>
 </div>
