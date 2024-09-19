@@ -44,6 +44,6 @@ class Create extends Component
     public function submit()
     {
         $appointmentDetails = $this->form->store();
-        dd($appointmentDetails);
+        $this->dispatch('appointmentCreated', $appointmentDetails);
     }
 }

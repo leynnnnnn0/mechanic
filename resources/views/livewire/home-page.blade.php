@@ -9,7 +9,7 @@
                <h1 class="text-6xl font-bold text-blue-500">AUTO MAINTENANCE,<br /> SERVICE & REPAIR</h1>
                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore sit libero quo rerum quasi atque consectetur dolorum saepe reiciendis, modi deleniti voluptate aspernatur eveniet? Nesciunt assumenda laborum delectus laboriosam odio?</p>
                <div>
-                    <a href="/appointment" class="px-4 py-1 text-lg bg-blue-500 font-bold rounded-sm text-white" wire:navigate>
+                    <a href="/appointment" class="cursor-pointer z-10 px-4 py-1 text-lg bg-blue-500 font-bold rounded-sm text-white" wire:navigate>
                          Book an appointment
                     </a>
                </div>

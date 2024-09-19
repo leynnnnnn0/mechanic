@@ -21,7 +21,8 @@
             <h1 class="text-md font-light">Appointment Number: <span class="text-blue-500 font-bold text-lg">{{ $result->appointment_number }}</span></h1>
             <strong class="text-sm font-light">Appointment Date: <span class="font-bold text-md">{{ Carbon\Carbon::parse($result->appointment_date)->format('F d, Y')}}</span></strong>
             <strong class="text-sm font-light">Appointment Time: <span class="font-bold text-md">{{ $result->appointment_time }}</span></strong>
-            <strong class="text-sm font-light">Status: <span>{{ $result->status }}</span></strong>
+            <strong class="text-sm font-light">Status: <span @class(['uppercase font-bold','text-orange-500'=> $result->status === 'pending', 'text-green-500' => $result->status === 'confirmed', 'text-red-500' => $result->status === 'cancelled'
+                    ])>{{ $result->status }}</span></strong>
         </div>
         @endif
         </template>

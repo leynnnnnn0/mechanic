@@ -11,10 +11,10 @@ class AppointmentForm extends Form
     public string $last_name;
     public string $email;
     public string $phone_number;
-    public string $make;
-    public string $model;
-    public string $year;
-    public string $color;
+    public string $make = 'Honda';
+    public string $model = 'Civic';
+    public string $year = '2022';
+    public string $color = 'Red';
     public string $service_type;
     public string $description = '';
     public string $additional_notes = '';
@@ -106,6 +106,8 @@ class AppointmentForm extends Form
             'appointment_time' => $validated['appointment_time'],
             'status' => 'pending',
         ]);
+
+        $appointment['vehicle'] = $car->carDetails;
 
         return $appointment;
     }

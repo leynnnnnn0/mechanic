@@ -1,4 +1,4 @@
-<div class="bg-white rounded shadow-lg h-fit">
+<div class="relative bg-white rounded shadow-lg h-fit">
     <div class="flex divide-x-2 h-16 border-b border-gray-300">
         <section class="font-bold flex-1 flex items-center justify-center p-5 bg-blue-500">
             <h1 class="font-bold text-xl text-white">
@@ -51,7 +51,7 @@
             <x-label>Service Type</x-label>
             <x-select wire:model="form.service_type">
                 @foreach ($services as $service)
-                <option value="{{ $service->value }}">{{ $service->name }}</option>
+                <option class="uppercase" value="{{ $service->value }}">{{ $service->value }}</option>
                 @endforeach
             </x-select>
             @error('form.service_type') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -127,8 +127,8 @@
             @error('form.phone_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         @elseif($step === 4)
-        <div class="flex justify-between">
-            <section class="flex-1">
+        <div class="flex justify-between col-span-2">
+            <section>
                 <h1 class="text-xl font-bold">Car Details</h1>
                 <x-form-input-div class="gap-0">
                     <x-label>Make</x-label>
@@ -164,11 +164,11 @@
                 </x-form-input-div>
                 <x-form-input-div class="gap-0">
                     <x-label>Description</x-label>
-                    <strong>{{ $form->description }}</strong>
+                    <strong>{{ $form->description ?: 'none' }}</strong>
                 </x-form-input-div>
                 <x-form-input-div class="gap-0">
                     <x-label>Notes</x-label>
-                    <strong>{{ $form->additional_notes }}</strong>
+                    <strong>{{ $form->additional_notes ?: 'none' }}</strong>
                 </x-form-input-div>
                 <x-form-input-div class="gap-0">
                     <x-label>Appointment Date</x-label>
@@ -212,5 +212,4 @@
                 @endif
         </div>
     </div>
-
 </div>
