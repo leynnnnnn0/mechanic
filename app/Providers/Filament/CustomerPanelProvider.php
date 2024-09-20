@@ -26,6 +26,7 @@ class CustomerPanelProvider extends PanelProvider
         return $panel
             ->id('customer')
             ->login(CustomLogin::class)
+            ->brandName('Mechanic')
             ->authGuard('customer')
             ->path('customer')
             ->colors([

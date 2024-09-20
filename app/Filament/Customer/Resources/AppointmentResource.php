@@ -147,6 +147,9 @@ class AppointmentResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
 
+                Tables\Actions\EditAction::make()
+                    ->hidden(fn(Appointment $appointment): bool => $appointment->status !== 'pending'),
+
                 Tables\Actions\Action::make('Cancel')
                     ->action(function (Appointment $appointment) {
                         $appointment->status = AppointmentStatus::CANCELLED;
