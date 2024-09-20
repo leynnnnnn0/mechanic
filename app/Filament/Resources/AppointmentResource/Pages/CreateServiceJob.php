@@ -10,9 +10,7 @@ use App\Filament\Resources\AppointmentResource;
 use App\Models\Appointment;
 use App\Models\Mechanic;
 use App\Models\ServiceJob;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -21,11 +19,7 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
-use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\Page;
-use Illuminate\Support\Str;
-use Livewire\Form;
-
 
 class CreateServiceJob extends Page
 {
@@ -48,7 +42,8 @@ class CreateServiceJob extends Page
                 TextInput::make('service_job_id')
                     ->default('SN-' . random_int(100000, 999999))
                     ->required()
-                    ->label('Service Job Number'),
+                    ->label('Service Job Number')
+                    ->required(),
 
                 TextInput::make('appointment_number')
                     ->default($this->record->appointment_number)
@@ -113,7 +108,7 @@ class CreateServiceJob extends Page
     public function save(): void
     {
         $data = $this->form->getState();
-        $data['appointment_id'] = $this->record->id;
+        // $data['appointment_id'] = $this->record->id;
         $data['car_id'] = $this->record->car_id;
         ServiceJob::updateOrCreate($data);
         $record = Appointment::find($this->record->id);

@@ -4,8 +4,10 @@ namespace App\Filament\Customer\Resources;
 
 use App\Filament\Customer\Resources\CarResource\Pages;
 use App\Filament\Customer\Resources\CarResource\RelationManagers;
+use App\Http\Controllers\Api\CarDetail;
 use App\Models\Car;
 use Filament\Forms;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -25,7 +27,21 @@ class CarResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Section::make('Car Details')
+                    ->schema([
+                        Hidden::make('customer_id')->default(auth()->user()->customer_id),
+                        Forms\Components\Select::make('make')
+                            ->options(CarDetail::getCarMakes())
+                            ->searchable()
+                            ->required(),
+                        Forms\Components\TextInput::make('model')->required(),
+                        Forms\Components\Select::make('year')
+                            ->options(CarDetail::getCarYears())
+                            ->searchable()
+                            ->required(),
+                        Forms\Components\TextInput::make('license_plate')->required(),
+                        Forms\Components\TextInput::make('color')->required(),
+                    ])->columns(2)
             ]);
     }
 
@@ -43,6 +59,7 @@ class CarResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

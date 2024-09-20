@@ -17,6 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class CustomerPanelProvider extends PanelProvider
@@ -26,7 +27,9 @@ class CustomerPanelProvider extends PanelProvider
         return $panel
             ->id('customer')
             ->login(CustomLogin::class)
-            ->brandName('Mechanic')
+            ->brandName(fn() => new HtmlString('
+                <a href="/" wire:navigate>Mechanic</a>
+            '))
             ->authGuard('customer')
             ->path('customer')
             ->colors([

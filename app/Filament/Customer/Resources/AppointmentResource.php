@@ -131,6 +131,7 @@ class AppointmentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('appointment_number'),
+                TextColumn::make('car.carDetails'),
                 TextColumn::make('service_type'),
                 TextColumn::make('status')->badge()
                     ->formatStateUsing(fn(string $state) => AppointmentStatus::from($state)->getLabel())
