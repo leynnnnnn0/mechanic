@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -27,6 +28,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 
 class AppointmentResource extends Resource
 {
@@ -41,6 +44,17 @@ class AppointmentResource extends Resource
             ->schema([
                 Wizard::make()->schema([
                     Wizard\Step::make('First Step')->schema([
+                        Hidden::make('status')->default(AppointmentStatus::PENDING),
+                        Forms\components\TextInput::make('appointment_number')
+                            ->default('AN-' . random_int(100000, 999999))
+                            ->disabled()
+                            ->dehydrated()
+                            ->required()
+                            ->maxLength(32)
+                            ->label('Appointment Number')
+                            ->unique(Appointment::class, 'id', ignoreRecord: true)
+                            ->columnSpanFull(),
+
                         Select::make('car_id')
                             ->options(fn(): Collection => Car::query()
                                 ->where('customer_id', auth()->user()->customer_id)
@@ -80,7 +94,7 @@ class AppointmentResource extends Resource
 
                     Wizard\Step::make('Second Step')->schema([
                         DatePicker::make('appointment_date')
-                            ->native('false'),
+                            ->native(false),
 
                         ToggleButtons::make('appointment_time')
                             ->options(TimeSlot::class)
@@ -101,7 +115,14 @@ class AppointmentResource extends Resource
                                         ->columnSpanFull()
                                 ])->columnSpanFull(),
                         ])->columns(2),
-                ])->columnSpanFull()
+                ])->columnSpanFull()->submitAction(new HtmlString(html: Blade::render(<<<BLADE
+                <x-filament::button
+                type="submit"
+                size="sm"
+                >
+                Submit
+                </x-filament::button>
+                BLADE))),
             ]);
     }
 
