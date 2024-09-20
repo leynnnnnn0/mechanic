@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Mechanic extends Model
+class Mechanic extends Authenticatable implements HasName
 {
     use HasFactory;
     protected $fillable = [
@@ -38,5 +39,10 @@ class Mechanic extends Model
     public function serviceJobs()
     {
         return $this->hasMany(ServiceJob::class);
+    }
+
+    public function getFilamentName(): string
+    {
+        return "{$this->username}";
     }
 }

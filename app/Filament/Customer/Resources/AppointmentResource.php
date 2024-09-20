@@ -7,11 +7,10 @@ use App\Enum\Service;
 use App\Enum\TimeSlot;
 use App\Filament\Customer\Resources\AppointmentResource\Pages;
 use App\Filament\Customer\Resources\AppointmentResource\Pages\ViewAppointmentDetails;
-use App\Filament\Customer\Resources\AppointmentResource\RelationManagers;
+use App\Http\Controllers\Api\CarDetail;
 use App\Models\Appointment;
 use App\Models\Car;
 use Carbon\Carbon;
-use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
@@ -30,6 +29,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Actions\Action;
 
 class AppointmentResource extends Resource
 {
@@ -65,7 +65,39 @@ class AppointmentResource extends Resource
                             ->preload()
                             ->searchable(['make', 'model', 'color', 'year'])
                             ->label('Car')
-                            ->required(),
+                            ->required()
+                            ->createOptionForm([
+                                Forms\Components\Section::make('Car Details')->schema([
+                                    Forms\Components\Select::make('make')
+                                        ->options(CarDetail::getCarMakes())
+                                        ->searchable()
+                                        ->required(),
+
+                                    Forms\Components\TextInput::make('model')
+                                        ->required(),
+
+                                    Forms\Components\Select::make('year')
+                                        ->options(CarDetail::getCarYears())
+                                        ->required(),
+
+                                    Forms\Components\TextInput::make('license_plate')
+                                        ->required(),
+
+                                    Forms\Components\TextInput::make('color')
+                                        ->required(),
+                                ])->columns(2)
+                            ])
+                            ->createOptionUsing(function (array $data) {
+                                $data['customer_id'] = auth()->user()->customer_id;
+                                $car = Car::create($data);
+                                return $car;
+                            })
+                            ->createOptionAction(function (Action $action) {
+                                return $action
+                                    ->modalHeading('Create Car')
+                                    ->modalSubmitActionLabel('Create Car')
+                                    ->modalWidth('lg');
+                            }),
 
                         Select::make('service_type')
                             ->options(Service::class)
@@ -157,13 +189,13 @@ class AppointmentResource extends Resource
                         $appointment->save();
                     })
                     ->color(AppointmentStatus::CANCELLED->getColor())
-                    ->visible(fn(Appointment $appointment): bool => $appointment->status !== 'cancelled')
+                    ->visible(fn(Appointment $appointment): bool => $appointment->status !== 'cancelled' && $appointment->status === 'pending')
                     ->icon('heroicon-o-x-mark'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

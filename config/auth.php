@@ -44,6 +44,10 @@ return [
         'customer' => [
             'driver' => 'session',
             'provider' => 'customers'
+        ],
+        'mechanic' => [
+            'driver' => 'session',
+            'provider' => 'mechanics'
         ]
     ],
 
@@ -72,6 +76,10 @@ return [
         'customers' => [
             'driver' => 'eloquent',
             'model' => App\Models\CustomerAccount::class
+        ],
+        'mechanics' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Mechanic::class
         ]
 
         // 'users' => [

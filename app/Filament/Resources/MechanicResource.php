@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Hash;
 
 class MechanicResource extends Resource
 {
@@ -57,7 +58,7 @@ class MechanicResource extends Resource
                 ])->columns(2),
 
                 Forms\Components\Section::make('Others')->schema([
-                    Forms\Components\TextInput::make('password')->password()->revealable()->required(),
+                    Forms\Components\TextInput::make('password')->password()->revealable()->required()->dehydrateStateUsing(fn(string $state): string => Hash::make($state)),
                 ])->columns(2),
             ]);
     }
