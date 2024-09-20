@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\Regex;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Models\Customer;
 use Filament\Forms\Components\DatePicker;
@@ -34,8 +35,18 @@ class CustomerResource extends Resource
 
                 Section::make('Contact Details')
                     ->schema([
-                        TextInput::make('email')->required()->email(),
-                        TextInput::make('phone_number')->required()->numeric(),
+                        TextInput::make('email')
+                            ->rule('sometimes')
+                            ->email()
+                            ->regex(Regex::EMAIL->value),
+
+                        TextInput::make('phone_number')
+                            ->required()
+                            ->numeric()
+                            ->regex(Regex::PHONE_NUMBER->value)
+                            ->validationMessages([
+                                'regex' => 'Invalid :attribute format'
+                            ]),
                     ])->columns(2),
 
                 Section::make('Address Details')
