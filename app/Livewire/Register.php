@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Customer;
 use App\Models\CustomerAccount;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 
 class Register extends Component
@@ -29,7 +30,7 @@ class Register extends Component
         if ($customer) {
             $customer->account()->create([
                 'username' => $validated['username'],
-                'password' => $validated['password']
+                'password' => Hash::make($validated['password'])
             ]);
             $customer->refresh();
         } else {
@@ -38,7 +39,7 @@ class Register extends Component
             ]);
             $customer->account()->create([
                 'username' => $validated['username'],
-                'password' => $validated['password']
+                'password' => Hash::make($validated['password'])
             ]);
             $customer->refresh();
         }
@@ -47,6 +48,7 @@ class Register extends Component
     public function submit()
     {
         $this->store();
+        return redirect('/');
     }
 
     public function render()
