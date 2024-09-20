@@ -12,7 +12,7 @@
         </section>
         <section class="space-x-3">
             <a href="/register" class="text-md font-medium" wire:navigate>Register</a>
-            <a href="/login" class="bg-blue-500 rounded-lg px-5 py-1 text-md text-white font-medium" wire:navigate>Login</a>
+            <a href="/customer/login" class="bg-blue-500 rounded-lg px-5 py-1 text-md text-white font-medium" wire:navigate>Login</a>
         </section>
     </nav>
 </div>
