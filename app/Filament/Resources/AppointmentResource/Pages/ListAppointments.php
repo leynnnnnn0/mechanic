@@ -21,9 +21,11 @@ class ListAppointments extends ListRecords
             ->badge(Appointment::count());
 
         foreach (AppointmentStatus::cases() as $status) {
+            $key = $status;
             $status = $status->value;
             $tabs[] = Tab::make(ucfirst($status))
                 ->badge(Appointment::where('status', $status)->count())
+                ->badgeColor($key->getColor())
                 ->modifyQueryUsing(function ($query) use ($status) {
                     return $query->where('status', $status);
                 });

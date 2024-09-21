@@ -30,7 +30,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\View;
 use Filament\Forms\Set;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -39,6 +38,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Random\RandomException;
+use Filament\Tables\Actions\ActionGroup;
+use Illuminate\Support\Str;
 
 class AppointmentResource extends Resource
 {
@@ -285,28 +286,36 @@ class AppointmentResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
 
-                Tables\Actions\Action::make('Work Started')
-                    ->url(fn(Appointment $appointment) => self::getUrl('create-service-job', ['record' => $appointment]))
-                    ->visible(fn(Appointment $appointment): bool => $appointment->status === 'confirmed')
-                    ->icon('heroicon-o-flag'),
-
-                Tables\Actions\Action::make('Confirm')
-                    ->action(function (Appointment $appointment) {
-                        $appointment->status = AppointmentStatus::CONFIRMED;
-                        $appointment->save();
-                    })
-                    ->color(AppointmentStatus::CONFIRMED->getColor())
-                    ->icon('heroicon-o-check')
-                    ->visible(fn(Appointment $appointment): bool => $appointment->status !== 'cancelled' && $appointment->status !== 'confirmed' && $appointment->status !== 'work started'),
-
-                Tables\Actions\Action::make('Cancel')
-                    ->action(function (Appointment $appointment) {
-                        $appointment->status = AppointmentStatus::CANCELLED;
-                        $appointment->save();
-                    })
-                    ->color(AppointmentStatus::CANCELLED->getColor())
-                    ->visible(fn(Appointment $appointment): bool => $appointment->status !== 'cancelled')
-                    ->icon('heroicon-o-x-mark'),
+                ActionGroup::make([
+                    ...collect(AppointmentStatus::cases())->map(function ($status, $index) {
+                        return Tables\Actions\Action::make(Str::headline($status->name))
+                            ->url(function (Appointment $appointment) use ($status) {
+                                return $status->value === AppointmentStatus::WORK_STARTED->value
+                                    ? self::getUrl('create-service-job', ['record' => $appointment])
+                                    : null;
+                            })
+                            ->action(function (Appointment $appointment) use ($status) {
+                                $appointment->status = $status->value;
+                                $appointment->save();
+                            })
+                            ->color(AppointmentStatus::CONFIRMED->getColor())
+                            ->icon('heroicon-o-check')
+                            ->visible(function (Appointment $appointment) use ($status) {
+                                // What is the next status after this current status in array
+                                $values = array_map(fn($case) => $case->value, AppointmentStatus::cases());
+                                $index = array_search($appointment->status, $values);
+                                return $status->value === AppointmentStatus::cases()[$index + 1]->value && $appointment->status !== 'completed';
+                            });
+                    }),
+                    Tables\Actions\Action::make('Cancel')
+                        ->action(function (Appointment $appointment) {
+                            $appointment->status = AppointmentStatus::CANCELLED;
+                            $appointment->save();
+                        })
+                        ->color(AppointmentStatus::CANCELLED->getColor())
+                        ->visible(fn(Appointment $appointment): bool => $appointment->status !== 'completed')
+                        ->icon('heroicon-o-x-mark'),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
