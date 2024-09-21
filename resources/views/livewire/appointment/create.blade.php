@@ -2,17 +2,17 @@
     <div class="flex divide-x-2 h-16 border-b border-gray-300">
         <section class="font-bold flex-1 flex items-center justify-center p-5 bg-blue-500">
             <h1 class="font-bold text-xl text-white">
-                Car Details
+                Personal Details
             </h1>
         </section>
         <section class="font-bold flex-1 flex items-center justify-center p-5 {{$step > 1 ? 'bg-blue-500' : 'bg-blue-200'}}">
             <h1 class="font-bold text-xl text-white">
-                Appointment Details
+                 Car Details
             </h1>
         </section>
         <section class="font-bold flex-1 flex items-center justify-center p-5 {{$step > 2 ? 'bg-blue-500' : 'bg-blue-200'}}">
             <h1 class="font-bold text-xl text-white">
-                Personal Details
+                Appointment Details
             </h1>
         </section>
         <section class="font-bold flex-1 flex items-center justify-center p-5 {{$step > 3 ? 'bg-blue-500' : 'bg-blue-200'}}">
@@ -24,7 +24,7 @@
 
     <div class="grid grid-cols-2 p-5 gap-5 w-full">
 
-        @if($step === 1)
+        @if($step === 3)
         <x-form-input-div>
             <x-label>Make</x-label>
             <x-input wire:model="form.make" />
@@ -105,7 +105,7 @@
             @error('form.appointment_time') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
 
-        @elseif($step === 3)
+        @elseif($step === 1)
         <x-form-input-div>
             <x-label>First Name</x-label>
             <x-input wire:model="form.first_name" />
@@ -125,6 +125,32 @@
             <x-label>Phone number</x-label>
             <x-input wire:model="form.phone_number" />
             @error('form.phone_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+
+        <x-form-input-div class="col-span-2">
+            <x-label>Street Address</x-label>
+            <x-input wire:model="form.street_address" />
+            @error('form.street_address') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+        <x-form-input-div>
+            <x-label>City</x-label>
+            <x-input wire:model="form.city" />
+            @error('form.city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+        <x-form-input-div>
+            <x-label>Barangay</x-label>
+            <x-input wire:model="form.barangay" />
+            @error('form.barangay') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+        <x-form-input-div>
+            <x-label>State or Provice</x-label>
+            <x-input wire:model="form.state_or_province" />
+            @error('form.state_or_province') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+        <x-form-input-div>
+            <x-label>Postal Code</x-label>
+            <x-input wire:model="form.postal_code" />
+            @error('form.postal_code') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         @elseif($step === 4)
         <div class="rounded-sm h-full w-full shadow-md p-10 col-span-2">

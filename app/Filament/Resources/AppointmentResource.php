@@ -312,6 +312,10 @@ class AppointmentResource extends Resource
                             });
                     }),
                     Tables\Actions\Action::make('Cancel')
+                        ->requiresConfirmation()
+                        ->modalHeading('Cancel Appointment')
+                        ->modalDescription('Are you sure you\'d like to cancel this appointment?')
+                        ->modalSubmitActionLabel('Yes, Cancel it')
                         ->action(function (Appointment $appointment) {
                             $appointment->status = AppointmentStatus::CANCELLED;
                             $appointment->save();

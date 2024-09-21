@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\AppointmentStatus;
 use App\Filament\Resources\ServiceJobResource\Pages;
 use App\Models\ServiceJob;
 use Carbon\Carbon;
@@ -19,14 +20,15 @@ use App\Enum\PaymentStatus;
 use App\Enum\RepairStatus;
 use App\Enum\Service;
 use App\Http\Controllers\Api\CarDetail;
-use App\Models\Appointment;
 use App\Models\Car;
 use App\Models\Customer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Components\Actions\Action;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Filament\Tables\Actions\ActionGroup;
+
 
 class ServiceJobResource extends Resource
 {
@@ -183,7 +185,8 @@ class ServiceJobResource extends Resource
                     ->label('Car Details'),
                 Tables\Columns\TextColumn::make('mechanic.fullName'),
                 Tables\Columns\TextColumn::make('service_type')->badge(),
-                Tables\Columns\TextColumn::make('status')->badge(),
+                Tables\Columns\TextColumn::make('status')->badge()
+                    ->formatStateUsing(fn($state) => Str::headline($state)),
                 Tables\Columns\TextColumn::make('start_date')
                     ->formatStateUsing(fn($state) => Carbon::make($state)->diffForHumans()),
             ])
@@ -191,8 +194,27 @@ class ServiceJobResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
+
+                ActionGroup::make([
+                    ...collect(RepairStatus::cases())->map(function ($status) {
+                        return Tables\Actions\Action::make($status->value)
+                            ->requiresConfirmation()
+                            ->modalHeading('Update Service Job Status')
+                            ->modalDescription('Are you sure you\'d like to update the status?')
+                            ->modalSubmitActionLabel('Yes, update it.')
+                            ->action(function (ServiceJob $appointment) use ($status) {
+                                $appointment->status = $status->value;
+                                $appointment->save();
+                            })
+                            ->hidden(function (ServiceJob $appointment) use ($status) {
+                                $values = array_map(fn($case) => $case->value, RepairStatus::cases());
+                                $index = array_search($appointment->status, $values);
+                                if ($index >= count($values) - 1) return true;
+                                return $status->value !== RepairStatus::cases()[$index + 1]->value;
+                            });
+                    })
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

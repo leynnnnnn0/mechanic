@@ -11,8 +11,13 @@ class AppointmentForm extends Form
     public string $last_name = '';
     public string $email = '';
     public string $phone_number;
-    public string $make = 'Honda';
-    public string $model = 'Civic';
+    public String $street_address = '';
+    public string $city = '';
+    public string $barangay = '';
+    public string $state_or_province = '';
+    public string $postal_code = '';
+    public string $make = 'Toyota';
+    public string $model = 'Corolla';
     public string $year = '2022';
     public string $color = 'Red';
     public string $service_type = '';
@@ -51,6 +56,11 @@ class AppointmentForm extends Form
             'first_name' => ['required'],
             'last_name' => ['required'],
             'email' => ['required', 'email'],
+            'street_address' => ['required'],
+            'city' => ['required'],
+            'barangay' => ['required'],
+            'state_or_province' => ['required'],
+            'postal_code' => ['required'],
         ];
     }
 
@@ -60,6 +70,11 @@ class AppointmentForm extends Form
             'first_name' => ['required'],
             'last_name' => ['required'],
             'email' => ['required', 'email'],
+            'street_address' => ['required'],
+            'city' => ['required'],
+            'barangay' => ['required'],
+            'state_or_province' => ['required'],
+            'postal_code' => ['required'],
             'make' => ['required'],
             'model' => ['required'],
             'year' => ['required'],

@@ -24,9 +24,9 @@ class Create extends Component
     public function nextStep()
     {
         match ($this->step) {
-            1 => $this->form->validate($this->form->carRules()),
-            2 => $this->form->validate($this->form->appointmentRules()),
-            3 => $this->form->validate($this->form->personalInformationRules())
+            2 => $this->form->validate($this->form->carRules()),
+            3 => $this->form->validate($this->form->appointmentRules()),
+            1 => $this->form->validate($this->form->personalInformationRules())
         };
         $this->step += 1;
     }

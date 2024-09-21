@@ -48,7 +48,7 @@ class Register extends Component
     public function submit()
     {
         $this->store();
-        return redirect('/');
+        return redirect('/customer/login');
     }
 
     public function render()

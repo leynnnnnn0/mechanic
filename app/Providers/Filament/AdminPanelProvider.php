@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\AdminResource\Widgets\AppointmentAndServiceJobWidget;
+use App\Filament\Resources\AdminResource\Widgets\AppointmentWidget;
+use App\Filament\Resources\AdminResource\Widgets\ServiceJobWidget;
 use App\Filament\Resources\AppointmentResource\Widgets\AppointmentOverview;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -40,7 +43,10 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                AppointmentOverview::class,
+                Widgets\FilamentInfoWidget::class,
+                AppointmentAndServiceJobWidget::class,
+                AppointmentWidget::class,
+                ServiceJobWidget::class
             ])
             ->middleware([
                 EncryptCookies::class,

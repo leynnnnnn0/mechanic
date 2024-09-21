@@ -11,8 +11,7 @@ class AppointmentOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Confirmed Appointments', Appointment::query()->where('status', 'confirmed')->count()),
-            Stat::make('Pending', Appointment::query()->where('status', 'pending')->count()),
+            Stat::make('Pending Appointments', Appointment::query()->where('status', 'pending')->count()),
             Stat::make('Cancelled', Appointment::query()->where('status', 'cancelled')->count()),
         ];
     }
