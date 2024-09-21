@@ -289,6 +289,10 @@ class AppointmentResource extends Resource
                 ActionGroup::make([
                     ...collect(AppointmentStatus::cases())->map(function ($status, $index) {
                         return Tables\Actions\Action::make(Str::headline($status->name))
+                            ->requiresConfirmation()
+                            ->modalHeading('Update Status')
+                            ->modalDescription('Are you sure you\'d like to update the status of this appointment?')
+                            ->modalSubmitActionLabel('Yes, Update it')
                             ->url(function (Appointment $appointment) use ($status) {
                                 return $status->value === AppointmentStatus::WORK_STARTED->value
                                     ? self::getUrl('create-service-job', ['record' => $appointment])

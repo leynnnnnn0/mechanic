@@ -23,6 +23,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class ServiceJobResource extends Resource
 {
@@ -87,7 +88,8 @@ class ServiceJobResource extends Resource
                 TextColumn::make('car.customer.full_name'),
                 TextColumn::make('car.car_details'),
                 TextColumn::make('service_type'),
-                TextColumn::make('status')->badge(),
+                TextColumn::make('status')->badge()
+                    ->formatStateUsing(fn($state) => Str::headline($state)),
                 TextColumn::make('start_date')->formatStateUsing(fn($state) => Carbon::parse($state)->format('F d, Y'))
             ])
             ->filters([
