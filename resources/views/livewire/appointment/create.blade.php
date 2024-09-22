@@ -1,25 +1,19 @@
 <div class="relative bg-white rounded shadow-lg h-fit">
     <div class="flex divide-x-2 h-16 border-b border-gray-300">
-        <section class="font-bold flex-1 flex items-center justify-center p-5 bg-blue-500">
-            <h1 class="font-bold text-xl text-white">
-                Personal Details
-            </h1>
-        </section>
-        <section class="font-bold flex-1 flex items-center justify-center p-5 {{$step > 1 ? 'bg-blue-500' : 'bg-blue-200'}}">
-            <h1 class="font-bold text-xl text-white">
-                Car Details
-            </h1>
-        </section>
-        <section class="font-bold flex-1 flex items-center justify-center p-5 {{$step > 2 ? 'bg-blue-500' : 'bg-blue-200'}}">
-            <h1 class="font-bold text-xl text-white">
-                Appointment Details
-            </h1>
-        </section>
-        <section class="font-bold flex-1 flex items-center justify-center p-5 {{$step > 3 ? 'bg-blue-500' : 'bg-blue-200'}}">
-            <h1 class="font-bold text-xl text-white">
-                Confirm All Details
-            </h1>
-        </section>
+        <x-appointment-step :active="true">
+            Personal Details <x-carbon-person style="color: white; height: 30px" />
+        </x-appointment-step>
+        <x-appointment-step :active="$step > 1">
+            Car Details <x-carbon-car style="color: white; height: 30px" />
+        </x-appointment-step>
+        <x-appointment-step :active="$step > 2">
+            Appointment Details
+            <x-carbon-volume-file-storage style="color: white; height: 30px" />
+        </x-appointment-step>
+        <x-appointment-step :active="$step > 3">
+            Confirm All Details
+            <x-carbon-checkmark-outline style="color: white; height: 30px" />
+        </x-appointment-step>
     </div>
 
     <div class="grid grid-cols-2 p-5 gap-5 w-full">
