@@ -142,11 +142,11 @@ class ServiceJobResource extends Resource
                         }),
 
                     Select::make('service_type')
-                        ->options(Service::class)
+                        ->options(array_map(fn($case) => $case->value, Service::cases()))
                         ->required(),
 
                     ToggleButtons::make('status')
-                        ->options(RepairStatus::class)
+                        ->options(array_map(fn($case): mixed => Str::headline($case->value), RepairStatus::cases()))
                         ->default('scheduled')
                         ->inline()
                         ->required(),
@@ -170,7 +170,7 @@ class ServiceJobResource extends Resource
                     TextInput::make('estimated_cost'),
                     TextInput::make('final_cost'),
                     Select::make('payment_status')
-                        ->options(PaymentStatus::class)
+                        ->options(array_map(fn($case): mixed => Str::headline($case->value), PaymentStatus::cases()))
                         ->default('awaiting_payment')
                         ->required(),
                 ])->columns(2),
