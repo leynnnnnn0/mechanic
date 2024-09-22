@@ -30,6 +30,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 
 class AppointmentResource extends Resource
 {
@@ -126,11 +128,17 @@ class AppointmentResource extends Resource
 
                     Wizard\Step::make('Second Step')->schema([
                         DatePicker::make('appointment_date')
+                            ->minDate(Carbon::today())
+                            ->live()
+                            ->afterStateUpdated(function (Set $set) {
+                                $set('appointment_time', null);
+                            })
                             ->native(false),
 
                         ToggleButtons::make('appointment_time')
-                            ->options(TimeSlot::class)
+                            ->options(fn(Get $get) => TimeSlot::getAvailableOptions($get('appointment_date')))
                             ->inline()
+                            ->hint(new HtmlString(Blade::render('<x-filament::loading-indicator class="h-5 w-5" wire:loading wire:target="data.date" />')))
                             ->required(),
                     ]),
 

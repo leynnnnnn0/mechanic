@@ -189,14 +189,19 @@ class AppointmentResource extends Resource
                             Forms\Components\Hidden::make('status')->default('pending'),
 
                             DatePicker::make('appointment_date')
-                                ->native(false)
-                                ->required()
-                                ->label('Appointment Date'),
+                                ->minDate(Carbon::today())
+                                ->live()
+                                ->afterStateUpdated(function (Set $set) {
+                                    $set('appointment_time', null);
+                                })
+                                ->native(false),
 
                             Forms\Components\ToggleButtons::make('appointment_time')
-                                ->options(TimeSlot::class)
+                                ->options(fn(Get $get) => TimeSlot::getAvailableOptions($get('appointment_date')))
                                 ->inline()
-                                ->required(),
+                                ->hint(new HtmlString(Blade::render('<x-filament::loading-indicator class="h-5 w-5" wire:loading wire:target="data.date" />')))
+                                ->required()
+                                ->live(),
 
                             Forms\Components\ToggleButtons::make('status')
                                 ->options(AppointmentStatus::class)
