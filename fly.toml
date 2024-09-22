@@ -34,3 +34,6 @@ console_command = 'php /var/www/html/artisan tinker'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+
+[deploy]
+  release_command = "php /var/www/html/artisan migrate --force"

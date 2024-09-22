@@ -2,15 +2,22 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
-class CustomerAccount extends Authenticatable implements HasName
+class CustomerAccount extends Authenticatable implements HasName, FilamentUser
 {
 
     use HasFactory;
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true; // Or implement your own logic here
+    }
 
     protected $fillable = [
         'username',
