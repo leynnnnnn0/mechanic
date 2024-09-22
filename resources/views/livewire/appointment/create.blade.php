@@ -1,16 +1,16 @@
 <div class="relative bg-white rounded shadow-lg h-fit">
     <div class="flex divide-x-2 h-16 border-b border-gray-300">
-        <x-appointment-step :active="true">
+        <x-appointment-step :active="true" :currentStep="$step === 1">
             Personal Details <x-carbon-person style="color: white; height: 30px" />
         </x-appointment-step>
-        <x-appointment-step :active="$step > 1">
+        <x-appointment-step :active="$step > 1" :currentStep="$step === 2">
             Car Details <x-carbon-car style="color: white; height: 30px" />
         </x-appointment-step>
-        <x-appointment-step :active="$step > 2">
+        <x-appointment-step :active="$step > 2" :currentStep="$step === 3">
             Appointment Details
             <x-carbon-volume-file-storage style="color: white; height: 30px" />
         </x-appointment-step>
-        <x-appointment-step :active="$step > 3">
+        <x-appointment-step :active="$step > 3" :currentStep="$step === 4">
             Confirm All Details
             <x-carbon-checkmark-outline style="color: white; height: 30px" />
         </x-appointment-step>
