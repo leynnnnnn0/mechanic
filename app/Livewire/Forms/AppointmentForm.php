@@ -7,15 +7,15 @@ use Livewire\Form;
 
 class AppointmentForm extends Form
 {
-    public string $first_name = '';
-    public string $last_name = '';
-    public string $email = '';
+    public string $first_name = 'Nathaniel';
+    public string $last_name = 'Alvarez';
+    public string $email = 'nathanielalva@gmail.com';
     public string $phone_number;
-    public String $street_address = '';
-    public string $city = '';
-    public string $barangay = '';
-    public string $state_or_province = '';
-    public string $postal_code = '';
+    public String $street_address = 'Block 4 lot 24 Sec 7 Belvedere 3';
+    public string $city = 'Rosario';
+    public string $barangay = 'Pasong Kawayan 2';
+    public string $state_or_province = 'Cavite';
+    public string $postal_code = '4107';
     public string $make = 'Toyota';
     public string $model = 'Corolla';
     public string $year = '2022';

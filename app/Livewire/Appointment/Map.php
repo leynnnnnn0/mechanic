@@ -2,32 +2,20 @@
 
 namespace App\Livewire\Appointment;
 
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
 
 class Map extends Component
 {
+    public $formData;
     public $apiKey;
     public $mapUrl;
     public $mechanicAddress;
     public $from;
     public $address;
 
-    public function submit()
-    {
-        $url = "https://api.geoapify.com/v1/geocode/search?text=$this->address&format=json&apiKey=$this->apiKey";
-        $response = Http::get($url);
-        $result = $response['results'][0];
-        $this->from = [
-            'latitude' => $result['lat'],
-            'longitude' => $result['lon'],
-            'address' => $result['formatted']
-        ];
-
-        $this->dispatch('updateMap', $this->from);
-    }
-
-    public function mount()
+    public function mount($form)
     {
         $this->apiKey = env('GEOAPIFY_API_KEY');
         $this->mechanicAddress = [
@@ -35,11 +23,24 @@ class Map extends Component
             'longitude' => 120.880015,
             'address' => 'Lavanya Square, 4107 Cavite, Philippines'
         ];
-        $this->from = [
-            'latitude' => 14.403519,
-            'longitude' => 120.880015,
-            'address' => 'Lavanya Square, 4107 Cavite, Philippines'
-        ];
+        $this->address = "$form->street_address $form->barangay $form->city $form->state_or_province $form->postal_code";
+        $url = "https://api.geoapify.com/v1/geocode/search?text=$this->address&format=json&apiKey=$this->apiKey";
+        try {
+            $response = Http::get($url);
+            $result = $response['results'][0];
+            $this->from = [
+                'latitude' => $result['lat'],
+                'longitude' => $result['lon'],
+                'address' => $result['formatted']
+            ];
+        } catch (Exception $e) {
+            $this->from = [
+                'latitude' => 14.403519,
+                'longitude' => 120.880015,
+                'address' => 'Lavanya Square, 4107 Cavite, Philippines'
+            ];
+        }
+        $this->dispatch('locationLoaded', $this->from);
     }
 
     public function render()

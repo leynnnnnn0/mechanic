@@ -7,7 +7,7 @@
         </section>
         <section class="font-bold flex-1 flex items-center justify-center p-5 {{$step > 1 ? 'bg-blue-500' : 'bg-blue-200'}}">
             <h1 class="font-bold text-xl text-white">
-                 Car Details
+                Car Details
             </h1>
         </section>
         <section class="font-bold flex-1 flex items-center justify-center p-5 {{$step > 2 ? 'bg-blue-500' : 'bg-blue-200'}}">
@@ -23,8 +23,55 @@
     </div>
 
     <div class="grid grid-cols-2 p-5 gap-5 w-full">
+        @if($step === 1)
+        <x-form-input-div>
+            <x-label>First Name</x-label>
+            <x-input wire:model="form.first_name" />
+            @error('form.first_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+        <x-form-input-div>
+            <x-label>Last Name</x-label>
+            <x-input wire:model="form.last_name" />
+            @error('form.last_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+        <x-form-input-div>
+            <x-label>Email</x-label>
+            <x-input wire:model="form.email" />
+            @error('form.email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+        <x-form-input-div>
+            <x-label>Phone number</x-label>
+            <x-input wire:model="form.phone_number" />
+            @error('form.phone_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
 
-        @if($step === 3)
+        <x-form-input-div class="col-span-2">
+            <x-label>Street Address</x-label>
+            <x-input wire:model="form.street_address" />
+            @error('form.street_address') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+        <x-form-input-div>
+            <x-label>City</x-label>
+            <x-input wire:model="form.city" />
+            @error('form.city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+        <x-form-input-div>
+            <x-label>Barangay</x-label>
+            <x-input wire:model="form.barangay" />
+            @error('form.barangay') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+        <x-form-input-div>
+            <x-label>State or Provice</x-label>
+            <x-input wire:model="form.state_or_province" />
+            @error('form.state_or_province') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+        <x-form-input-div>
+            <x-label>Postal Code</x-label>
+            <x-input wire:model="form.postal_code" />
+            @error('form.postal_code') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </x-form-input-div>
+
+        @elseif($step === 2)
         <x-form-input-div>
             <x-label>Make</x-label>
             <x-input wire:model="form.make" />
@@ -46,7 +93,7 @@
             @error('form.color') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
 
-        @elseif($step === 2)
+        @elseif($step === 3)
         <x-form-input-div class="col-span-2">
             <x-label>Service Type</x-label>
             <x-select wire:model="form.service_type">
@@ -105,53 +152,10 @@
             @error('form.appointment_time') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
 
-        @elseif($step === 1)
-        <x-form-input-div>
-            <x-label>First Name</x-label>
-            <x-input wire:model="form.first_name" />
-            @error('form.first_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </x-form-input-div>
-        <x-form-input-div>
-            <x-label>Last Name</x-label>
-            <x-input wire:model="form.last_name" />
-            @error('form.last_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </x-form-input-div>
-        <x-form-input-div>
-            <x-label>Email</x-label>
-            <x-input wire:model="form.email" />
-            @error('form.email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </x-form-input-div>
-        <x-form-input-div>
-            <x-label>Phone number</x-label>
-            <x-input wire:model="form.phone_number" />
-            @error('form.phone_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </x-form-input-div>
+        <div class="col-span-2">
+            <livewire:appointment.map :$form />
+        </div>
 
-        <x-form-input-div class="col-span-2">
-            <x-label>Street Address</x-label>
-            <x-input wire:model="form.street_address" />
-            @error('form.street_address') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </x-form-input-div>
-        <x-form-input-div>
-            <x-label>City</x-label>
-            <x-input wire:model="form.city" />
-            @error('form.city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </x-form-input-div>
-        <x-form-input-div>
-            <x-label>Barangay</x-label>
-            <x-input wire:model="form.barangay" />
-            @error('form.barangay') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </x-form-input-div>
-        <x-form-input-div>
-            <x-label>State or Provice</x-label>
-            <x-input wire:model="form.state_or_province" />
-            @error('form.state_or_province') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </x-form-input-div>
-        <x-form-input-div>
-            <x-label>Postal Code</x-label>
-            <x-input wire:model="form.postal_code" />
-            @error('form.postal_code') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </x-form-input-div>
         @elseif($step === 4)
         <div class="rounded-sm h-full w-full shadow-md p-10 col-span-2">
             <div class="grid grid-cols-3 col-span-2 text-gray-900 gap-10">
