@@ -8,7 +8,7 @@
         <div class="container max-w-screen-lg mx-auto">
             <div>
                 @if($details)
-                <livewire:appointment.details :$details/>
+                <livewire:appointment.details :$details />
                 @else
                 <livewire:appointment.create />
                 @endif
@@ -16,4 +16,3 @@
         </div>
     </div>
 </div>
-

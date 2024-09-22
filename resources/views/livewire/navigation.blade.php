@@ -19,11 +19,11 @@
         <section class="flex items-center gap-10">
             <a href="/" class="text-lg font-bold text-blue-500" wire:navigate>MECHANIC</a>
             <div class="space-x-5 lg:block hidden">
-                <a href="/" class="text-sm font-bold" href="#" wire:navigate>Home</a>
-                <a class="text-sm font-bold" href="#">About</a>
-                <a class="text-sm font-bold" href="#">Service</a>
-                <a class="text-sm font-bold" href="/appointment" wire:navigate>Appointment</a>
-                <a class="text-sm font-bold" href="/track-status" wire:navigate>Track Status</a>
+                <x-nav-link href="/" :active="request()->is('/')">Home</x-nav-link>
+                <x-nav-link href="/" :active="request()->is('about')">About</x-nav-link>
+                <x-nav-link href="/" :active="request()->is('service')">Service</x-nav-link>
+                <x-nav-link href="/appointment" :active="request()->is('appointment')">Appointment</x-nav-link>
+                <x-nav-link href="/track-status" :active="request()->is('track-status')">Track Status</x-nav-link>
             </div>
         </section>
         <section class="space-x-3 lg:block hidden">

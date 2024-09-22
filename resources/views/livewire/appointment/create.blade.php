@@ -152,9 +152,32 @@
 
         @elseif($step === 4)
         <div class="rounded-sm h-full w-full shadow-md p-10 col-span-2">
-            <div class="grid grid-cols-3 col-span-2 text-gray-900 gap-10">
+            <div class="grid lg:grid-cols-3 md:grid-cols-2 col-span-2 text-gray-900 gap-10 grid-cols-1">
                 <section class="flex-1">
-                    <div class="flex items-center justify-between border-b border-gray-300 border-dashed pb-5 mb-5">
+                    <div class="border-y border-gray-300 border-dashed py-5 mb-5 flex items-center justify-between">
+                        <h1 class="text-xl font-bold">Personal Details</h1>
+                        <button wire:click="goToStep(3)" class="text-blue-500 font-bold text-sm">Edit</button>
+                    </div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>First Name</x-label>
+                        <strong>{{ $form->first_name ?? 'none'}}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Last Name</x-label>
+                        <strong>{{ $form->last_name ?? 'none'}}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Email</x-label>
+                        <strong>{{ $form->email ?? 'none'}}</strong>
+                    </x-form-input-div>
+                    <x-form-input-div class="gap-0">
+                        <x-label>Phone Number</x-label>
+                        <strong>{{ $form->phone_number ?? 'none' }}</strong>
+                    </x-form-input-div>
+                </section>
+
+                <section class="flex-1">
+                    <div class="flex items-center justify-between border-y border-gray-300 border-dashed py-5 mb-5">
                         <h1 class="text-xl font-bold">Car Details</h1>
                         <button wire:click="goToStep(1)" class="text-blue-500 font-bold text-sm">Edit</button>
                     </div>
@@ -177,13 +200,13 @@
                 </section>
 
                 <section class="flex-1">
-                    <div class="border-b border-gray-300 border-dashed pb-5 mb-5 flex items-center justify-between">
+                    <div class="border-y border-gray-300 border-dashed py-5 mb-5 flex items-center justify-between">
                         <h1 class="text-xl font-bold">Appointment Details</h1>
                         <button wire:click="goToStep(2)" class="text-blue-500 font-bold text-sm">Edit</button>
                     </div>
                     <x-form-input-div class="gap-0">
                         <x-label>Service Type</x-label>
-                        <strong>{{ $form->service_type}}</strong>
+                        <strong>{{ $form->service_type ?? 'None'}}</strong>
                     </x-form-input-div>
                     <x-form-input-div class="gap-0">
                         <x-label>Is Emergency?</x-label>
@@ -208,29 +231,6 @@
                     <x-form-input-div class="gap-0">
                         <x-label>Appointment Time</x-label>
                         <strong>{{ $form->appointment_time ?? 'none'}}</strong>
-                    </x-form-input-div>
-                </section>
-
-                <section class="flex-1">
-                    <div class="border-b border-gray-300 border-dashed pb-5 mb-5 flex items-center justify-between">
-                        <h1 class="text-xl font-bold">Personal Details</h1>
-                        <button wire:click="goToStep(3)" class="text-blue-500 font-bold text-sm">Edit</button>
-                    </div>
-                    <x-form-input-div class="gap-0">
-                        <x-label>First Name</x-label>
-                        <strong>{{ $form->first_name ?? 'none'}}</strong>
-                    </x-form-input-div>
-                    <x-form-input-div class="gap-0">
-                        <x-label>Last Name</x-label>
-                        <strong>{{ $form->last_name ?? 'none'}}</strong>
-                    </x-form-input-div>
-                    <x-form-input-div class="gap-0">
-                        <x-label>Email</x-label>
-                        <strong>{{ $form->email ?? 'none'}}</strong>
-                    </x-form-input-div>
-                    <x-form-input-div class="gap-0">
-                        <x-label>Phone Number</x-label>
-                        <strong>{{ $form->phone_number ?? 'none' }}</strong>
                     </x-form-input-div>
                 </section>
 
