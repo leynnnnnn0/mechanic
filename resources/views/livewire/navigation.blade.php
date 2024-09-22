@@ -10,6 +10,8 @@
                 <x-menu-link @click="toggle" href="/" :active="request()->is('service')">Service</x-menu-link>
                 <x-menu-link @click="toggle" href="/appointment" :active="request()->is('appointment')">Appointment</x-menu-link>
                 <x-menu-link @click="toggle" href="/track-status" :active="request()->is('track-status')">Track Status</x-menu-link>
+                <x-menu-link @click="toggle" href="/register" :active="request()->is('register')">Register</x-menu-link>
+                <x-menu-link @click="toggle" href="/customer/login" :active="request()->is('track-status')">Login</x-menu-link>
             </div>
         </div>
     </template>
