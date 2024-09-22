@@ -10,6 +10,7 @@ use Livewire\Component;
 
 class Create extends Component
 {
+    public array $years;
     public AppointmentForm $form;
     public array $makes;
     public array $services;
@@ -35,12 +36,13 @@ class Create extends Component
     {
         $this->step = $count;
     }
-    
+
     public function mount()
     {
         $this->makes = CarDetail::getCarMakes();
         $this->services = Service::cases();
         $this->timeSlots = TimeSlot::cases();
+        $this->years = CarDetail::getCarYears();
     }
     public function render()
     {

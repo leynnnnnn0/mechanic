@@ -1,15 +1,31 @@
-<div class="h-[300px] w-full" wire:ignore>
+<div x-data="map" class="h-[300px] w-full" wire:ignore>
     <div class="h-full w-full" id="my-map">
 
     </div>
 </div>
 
 <script>
-    function initMap() {
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('map', () => ({
+            customerAddress: JSON.parse('<?php echo json_encode($from) ?>'),
+            init() {
+                Livewire.on('updateMap', (param) => {
+                    this.customerAddress = param[0];
+                    initMap(this.customerAddress);
+                })
+                console.log(this.customerAddress)
+                initMap(this.customerAddress)
+            }
+        }))
+    })
+
+    let map;
+
+    function initMap(customerAddress) {
         if (map) {
             map.remove();
         }
-        const map = L.map('my-map').setView([14.386013, 120.8802597], 13);
+        map = L.map('my-map').setView([14.386013, 120.8802597], 13);
 
         const myAPIKey = "<?php echo $apiKey ?>";
 
@@ -23,7 +39,6 @@
         }).addTo(map);
 
         const mechanicAddress = JSON.parse('<?php echo json_encode($mechanicAddress) ?>');
-        const customerAddress = JSON.parse('<?php echo json_encode($from) ?>')
 
         const fromWaypoint = [customerAddress.latitude, customerAddress.longitude];
         const fromWaypointMarker = L.marker(fromWaypoint).addTo(map).bindPopup(customerAddress.address);
@@ -83,6 +98,4 @@
 
         }, error => console.log(err));
     }
-
-    initMap()
 </script>

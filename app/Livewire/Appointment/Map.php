@@ -21,7 +21,7 @@ class Map extends Component
         $this->mechanicAddress = [
             'latitude' => 14.403519,
             'longitude' => 120.880015,
-            'address' => 'Lavanya Square, 4107 Cavite, Philippines'
+            'address' => 'Mechanic Place, 4107 Cavite, Philippines'
         ];
         $this->address = "$form->street_address $form->barangay $form->city $form->state_or_province $form->postal_code";
         $url = "https://api.geoapify.com/v1/geocode/search?text=$this->address&format=json&apiKey=$this->apiKey";

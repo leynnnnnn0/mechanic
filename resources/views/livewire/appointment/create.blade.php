@@ -41,34 +41,42 @@
 
         <x-form-input-div class="col-span-2">
             <x-label>Street Address</x-label>
-            <x-input wire:model="form.street_address" />
+            <x-input wire:model.live="form.street_address" />
             @error('form.street_address') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
             <x-label>City</x-label>
-            <x-input wire:model="form.city" />
+            <x-input wire:model.live="form.city" />
             @error('form.city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
             <x-label>Barangay</x-label>
-            <x-input wire:model="form.barangay" />
+            <x-input wire:model.live="form.barangay" />
             @error('form.barangay') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
             <x-label>State or Provice</x-label>
-            <x-input wire:model="form.state_or_province" />
+            <x-input wire:model.live="form.state_or_province" />
             @error('form.state_or_province') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
             <x-label>Postal Code</x-label>
-            <x-input wire:model="form.postal_code" />
+            <x-input wire:model.live="form.postal_code" />
             @error('form.postal_code') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
+
+        <div class="col-span-2">
+            <livewire:appointment.map :form="$form" />
+        </div>
 
         @elseif($step === 2)
         <x-form-input-div>
             <x-label>Make</x-label>
-            <x-input wire:model="form.make" />
+            <x-select wire:model="form.make">
+                @foreach ($makes as $make)
+                <option value="{{ $make}}">{{ $make }}</option>
+                @endforeach
+            </x-select>
             @error('form.make') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
@@ -78,7 +86,11 @@
         </x-form-input-div>
         <x-form-input-div>
             <x-label>Year</x-label>
-            <x-input wire:model="form.year" />
+            <x-select wire:model="form.year">
+                @foreach ($years as $year)
+                <option value="{{ $year}}">{{ $year }}</option>
+                @endforeach
+            </x-select>
             @error('form.year') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
@@ -145,10 +157,6 @@
             </x-select>
             @error('form.appointment_time') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
-
-        <div class="col-span-2">
-            <livewire:appointment.map :$form />
-        </div>
 
         @elseif($step === 4)
         <div class="rounded-sm h-full w-full shadow-md p-10 col-span-2">
