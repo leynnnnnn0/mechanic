@@ -39,4 +39,5 @@ console_command = 'php /var/www/html/artisan tinker'
   release_command = "php /var/www/html/artisan migrate --force"
 
 [processes]
+  app = "php /var/www/html/artisan serve --host=0.0.0.0 --port=8080"
   worker = "php /var/www/html/artisan queue:work"

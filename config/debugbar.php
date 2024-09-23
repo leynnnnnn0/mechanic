@@ -14,7 +14,7 @@ return [
      |
      */
 
-    'enabled' => true,
+    'enabled' => env('DEBUGBAR_ENABLED', false),
     'hide_empty_tabs' => false, // Hide tabs until they have content
     'except' => [
         'telescope*',
@@ -215,7 +215,7 @@ return [
         'db' => [
             'with_params'       => true,   // Render SQL with the parameters substituted
             'exclude_paths'     => [       // Paths to exclude entirely from the collector
-//                'vendor/laravel/framework/src/Illuminate/Session', // Exclude sessions queries
+                //                'vendor/laravel/framework/src/Illuminate/Session', // Exclude sessions queries
             ],
             'backtrace'         => true,   // Use a backtrace to find the origin of the query in your files.
             'backtrace_exclude_paths' => [],   // Paths to exclude from backtrace. (in addition to defaults)
