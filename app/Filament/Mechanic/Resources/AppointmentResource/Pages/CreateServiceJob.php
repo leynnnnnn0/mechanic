@@ -7,6 +7,7 @@ use App\Enum\PaymentStatus;
 use App\Enum\RepairStatus;
 use App\Enum\Service;
 use App\Filament\Mechanic\Resources\AppointmentResource;
+use App\Models\Appointment;
 use App\Models\Mechanic;
 use App\Models\ServiceJob;
 use Filament\Forms\Components\Actions\Action;
@@ -111,10 +112,10 @@ class CreateServiceJob extends Page
         // $data['appointment_id'] = $this->record->id;
         $data['car_id'] = $this->record->car_id;
         ServiceJob::updateOrCreate($data);
-        $record = AppointmentResource::find($this->record->id);
+        $record = Appointment::find($this->record->id);
         $record->status = AppointmentStatus::WORK_STARTED;
         $record->save();
-        $this->redirect(AppointmentResource::getUrl('view', ['record' => $this->record]));
+        $this->redirect(AppointmentResource::getUrl('index'));
     }
 
     public function getSubNavigation(): array

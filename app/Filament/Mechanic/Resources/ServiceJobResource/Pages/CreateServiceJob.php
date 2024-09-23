@@ -9,4 +9,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateServiceJob extends CreateRecord
 {
     protected static string $resource = ServiceJobResource::class;
+    protected static bool $canCreateAnother = false;
 }

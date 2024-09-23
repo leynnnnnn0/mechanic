@@ -58,8 +58,7 @@ class AppointmentResource extends Resource
                                 ->dehydrated()
                                 ->required()
                                 ->maxLength(32)
-                                ->label('Appointment Number')
-                                ->unique(Appointment::class, 'id', ignoreRecord: true),
+                                ->label('Appointment Number'),
 
                             Select::make(name: 'customer_id')
                                 ->relationship('car.customer')
@@ -155,7 +154,10 @@ class AppointmentResource extends Resource
                                 }),
 
                             Select::make('service_type')
-                                ->options(Service::class)
+                                ->options(function () {
+                                    $data = array_map(fn($case) => $case->value, Service::cases());
+                                    return array_combine($data, $data);
+                                })
                                 ->searchable()
                                 ->required(),
 

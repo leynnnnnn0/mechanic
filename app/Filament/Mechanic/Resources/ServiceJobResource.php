@@ -51,7 +51,10 @@ class ServiceJobResource extends Resource
                     TextInput::make('mechanic_id'),
 
                     Select::make('service_type')
-                        ->options(array_map(fn($case): mixed => Str::headline($case->value), Service::cases()))
+                        ->options(function () {
+                            $data = array_map(fn($case) => $case->value, Service::cases());
+                            return array_combine($data, $data);
+                        })
                         ->required(),
 
                     ToggleButtons::make('status')
