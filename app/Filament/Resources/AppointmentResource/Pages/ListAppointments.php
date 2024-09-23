@@ -8,7 +8,7 @@ use App\Models\Appointment;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Components\Tab;
-
+use Illuminate\Support\Facades\DB;
 
 class ListAppointments extends ListRecords
 {
@@ -20,17 +20,23 @@ class ListAppointments extends ListRecords
         $tabs[] = Tab::make('All Appointments')
             ->badge(Appointment::count());
 
+        $statusCounts = Appointment::select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->get()
+            ->pluck('count', 'status');
+
         foreach (AppointmentStatus::cases() as $status) {
             $key = $status;
-            $status = $status->value;
-            $tabs[] = Tab::make(ucfirst($status))
-                ->badge(Appointment::where('status', $status)->count())
+            $statusValue = $status->value;
+            $count = $statusCounts->get($statusValue, 0);
+
+            $tabs[] = Tab::make(ucfirst($statusValue))
+                ->badge($count)
                 ->badgeColor($key->getColor())
-                ->modifyQueryUsing(function ($query) use ($status) {
-                    return $query->where('status', $status);
+                ->modifyQueryUsing(function ($query) use ($statusValue) {
+                    return $query->where('status', $statusValue);
                 });
         }
-
 
         return $tabs;
     }

@@ -29,7 +29,7 @@ class ServiceJobResource extends Resource
 {
     protected static ?string $model = ServiceJob::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-flag';
     protected static ?string $navigationLabel = 'My Service Jobs';
 
     public static function form(Form $form): Form
@@ -51,11 +51,11 @@ class ServiceJobResource extends Resource
                     TextInput::make('mechanic_id'),
 
                     Select::make('service_type')
-                        ->options(Service::class)
+                        ->options(array_map(fn($case): mixed => Str::headline($case->value), Service::cases()))
                         ->required(),
 
                     ToggleButtons::make('status')
-                        ->options(RepairStatus::class)
+                        ->options(array_map(fn($case): mixed => Str::headline($case->value), RepairStatus::cases()))
                         ->default('scheduled')
                         ->inline()
                         ->required()
@@ -73,7 +73,7 @@ class ServiceJobResource extends Resource
                     TextInput::make('estimated_cost'),
                     TextInput::make('final_cost'),
                     Select::make('payment_status')
-                        ->options(PaymentStatus::class)
+                        ->options(array_map(fn($case): mixed => Str::headline(value: $case->value), PaymentStatus::cases()))
                         ->default('awaiting_payment')
                         ->required(),
                 ])->columns(2),

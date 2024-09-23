@@ -25,7 +25,8 @@
             <strong class="text-sm font-light">Status: <span @class(['uppercase font-bold','text-orange-500'=> $result->status === 'pending', 'text-green-500' => $result->status === 'confirmed', 'text-red-500' => $result->status === 'cancelled'
                     ])>{{ $result->status }}</span></strong>
         </div>
+        @elseif($query && !$result)
+        <h1 class="font-bold text-red-500">No result found</h1>
         @endif
-        </template>
     </section>
 </div>

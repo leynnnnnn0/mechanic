@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str; 
 
 class MechanicResource extends Resource
 {
@@ -39,7 +40,7 @@ class MechanicResource extends Resource
 
                 Forms\Components\Section::make('Professional Details')->schema([
                     Forms\Components\Select::make('specialization')
-                        ->options(Specialization::class)
+                        ->options(array_map(fn($case) => Str::headline($case->value), Specialization::cases()))
                         ->required(),
                 ])->columns(2),
 

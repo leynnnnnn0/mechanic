@@ -37,3 +37,6 @@ console_command = 'php /var/www/html/artisan tinker'
 
 [deploy]
   release_command = "php /var/www/html/artisan migrate --force"
+
+[processes]
+  worker = "php /var/www/html/artisan queue:work"

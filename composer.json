@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.9"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.14",
         "fakerphp/faker": "^1.23",
         "fly-apps/dockerfile-laravel": "^1.0",
         "laravel/pint": "^1.13",

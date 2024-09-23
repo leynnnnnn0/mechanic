@@ -29,7 +29,14 @@ use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Set;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -57,11 +64,11 @@ class AppointmentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Wizard::make([
+                Wizard::make([
                     // First Step
-                    Forms\components\Wizard\Step::make('First Step')
+                    Step::make('First Step')
                         ->schema([
-                            Forms\components\TextInput::make('appointment_number')
+                            TextInput::make('appointment_number')
                                 ->default('AN-' . random_int(100000, 999999))
                                 ->disabled()
                                 ->dehydrated()
@@ -70,7 +77,7 @@ class AppointmentResource extends Resource
                                 ->label('Appointment Number')
                                 ->unique(Appointment::class, 'id', ignoreRecord: true),
 
-                            Forms\components\Select::make(name: 'customer_id')
+                            Select::make(name: 'customer_id')
                                 ->relationship('car.customer')
                                 ->getOptionLabelFromRecordUsing(fn($record) => "{$record->first_name} {$record->last_name}")
                                 ->searchable(['first_name', 'last_name'])
@@ -87,25 +94,25 @@ class AppointmentResource extends Resource
                                     }
                                 })
                                 ->createOptionForm([
-                                    Forms\Components\Section::make('Personal Details')->schema([
-                                        Forms\Components\TextInput::make('first_name'),
-                                        Forms\Components\TextInput::make('middle_name'),
-                                        Forms\Components\TextInput::make('last_name'),
-                                        Forms\Components\DatePicker::make('date_of_birth'),
+                                    Section::make('Personal Details')->schema([
+                                        TextInput::make('first_name'),
+                                        TextInput::make('middle_name'),
+                                        TextInput::make('last_name'),
+                                        DatePicker::make('date_of_birth'),
                                     ])->columns(2),
 
-                                    Forms\Components\Section::make('Contact Details')->schema([
-                                        Forms\Components\TextInput::make('email')->email(),
-                                        Forms\Components\TextInput::make('phone_number'),
+                                    Section::make('Contact Details')->schema([
+                                        TextInput::make('email')->email(),
+                                        TextInput::make('phone_number'),
                                     ])->columns(2),
 
-                                    Forms\Components\Section::make('Address Details')->schema([
-                                        Forms\Components\TextInput::make('street_address')
+                                    Section::make('Address Details')->schema([
+                                        TextInput::make('street_address')
                                             ->columnSpan(2),
-                                        Forms\Components\TextInput::make('city'),
-                                        Forms\Components\TextInput::make('barangay'),
-                                        Forms\Components\TextInput::make('state_or_province'),
-                                        Forms\Components\TextInput::make('postal_code'),
+                                        TextInput::make('city'),
+                                        TextInput::make('barangay'),
+                                        TextInput::make('state_or_province'),
+                                        TextInput::make('postal_code'),
                                     ])->columns(2),
                                 ])
                                 ->createOptionUsing(function (array $data) {
@@ -118,7 +125,7 @@ class AppointmentResource extends Resource
                                         ->modalWidth('lg');
                                 }),
 
-                            Forms\components\Select::make('car_id')
+                            Select::make('car_id')
                                 ->options(fn(Get $get): Collection => Car::query()
                                     ->where('customer_id', $get('customer_id'))
                                     ->get()
@@ -130,23 +137,23 @@ class AppointmentResource extends Resource
                                 ->label('Car')
                                 ->required()
                                 ->createOptionForm([
-                                    Forms\Components\Section::make('Car Details')->schema([
-                                        Forms\Components\Select::make('make')
+                                    Section::make('Car Details')->schema([
+                                        Select::make('make')
                                             ->options(CarDetail::getCarMakes())
                                             ->searchable()
                                             ->required(),
 
-                                        Forms\Components\TextInput::make('model')
+                                        TextInput::make('model')
                                             ->required(),
 
-                                        Forms\Components\Select::make('year')
+                                        Select::make('year')
                                             ->options(CarDetail::getCarYears())
                                             ->required(),
 
-                                        Forms\Components\TextInput::make('license_plate')
+                                        TextInput::make('license_plate')
                                             ->required(),
 
-                                        Forms\Components\TextInput::make('color')
+                                        TextInput::make('color')
                                             ->required(),
                                     ])->columns(2)
                                 ])
@@ -163,7 +170,7 @@ class AppointmentResource extends Resource
                                         ->modalWidth('lg');
                                 }),
 
-                            Forms\components\Select::make('service_type')
+                            Select::make('service_type')
                                 ->options(array_map(fn($case) => $case->value, Service::cases()))
                                 ->searchable()
                                 ->required(),
@@ -184,9 +191,9 @@ class AppointmentResource extends Resource
                         ])->columns(2),
 
                     // Second Step
-                    Forms\Components\Wizard\Step::make('Second Step')
+                    Step::make('Second Step')
                         ->schema([
-                            Forms\Components\Hidden::make('status')->default('pending'),
+                            Hidden::make('status')->default('pending'),
 
                             DatePicker::make('appointment_date')
                                 ->minDate(Carbon::today())
@@ -196,14 +203,14 @@ class AppointmentResource extends Resource
                                 })
                                 ->native(false),
 
-                            Forms\Components\ToggleButtons::make('appointment_time')
+                            ToggleButtons::make('appointment_time')
                                 ->options(fn(Get $get) => TimeSlot::getAvailableOptions($get('appointment_date')))
                                 ->inline()
                                 ->hint(new HtmlString(Blade::render('<x-filament::loading-indicator class="h-5 w-5" wire:loading wire:target="data.date" />')))
                                 ->required()
                                 ->live(),
 
-                            Forms\Components\ToggleButtons::make('status')
+                            ToggleButtons::make('status')
                                 ->options(AppointmentStatus::class)
                                 ->inline()
                                 ->default('pending')
@@ -211,12 +218,12 @@ class AppointmentResource extends Resource
                                 ->required(),
                         ])->columns(2),
 
-                    Forms\Components\Wizard\Step::make('Third Step')
+                    Step::make('Third Step')
                         ->schema([
                             Repeater::make('attachments')
                                 ->relationship('attachments')
                                 ->schema([
-                                    Forms\components\FileUpload::make('attachment')
+                                    FileUpload::make('attachment')
                                         ->previewable(false)
                                         ->label('')
                                         ->disk('public')

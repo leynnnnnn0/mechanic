@@ -1,7 +1,7 @@
 <div class="absolute min-h-screen w-full inset-0 z-40 flex items-center justify-center bg-white">
     <div class="flex flex-col w-[800px] bg-white shadow-lg p-5 gap-5 m-5">
         <section>
-            <h1 class="font-bold md:text-2xl text-sm font-poppins">Your Mechanic Reservation is currently on <span class="text-orange-500 uppercase">{{ true ? 'good' : '$appointmentDetails[\'status\']' }}</span> status</h1>
+            <h1 class="font-bold md:text-2xl text-sm font-poppins">Your Mechanic Reservation is currently on <span class="text-orange-500 uppercase">{{ $appointmentDetails['status'] }}</span> status</h1>
             <p class="md:text-sm text-[9px]">One of our team will contact you within 2-3 hours to confirm the reservation details.</p>
         </section>
         <section class="relative h-auto">

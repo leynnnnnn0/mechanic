@@ -13,7 +13,6 @@
                     this.customerAddress = param[0];
                     initMap(this.customerAddress);
                 })
-                console.log(this.customerAddress)
                 initMap(this.customerAddress)
             }
         }))

@@ -8,6 +8,7 @@ use App\Models\ServiceJob;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Components\Tab;
+use Illuminate\Support\Facades\DB;
 
 class ListServiceJobs extends ListRecords
 {
@@ -27,16 +28,22 @@ class ListServiceJobs extends ListRecords
         $tabs[] = Tab::make('All Appointments')
             ->badge(ServiceJob::count());
 
+        $statusCounts = ServiceJob::select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->get()
+            ->pluck('count', 'status');
+
         foreach (RepairStatus::cases() as $status) {
             $key = $status;
-            $status = $status->value;
-            $tabs[] = Tab::make(ucfirst($status))
-                ->badge(ServiceJob::where('status', $status)->count())
-                ->modifyQueryUsing(function ($query) use ($status) {
-                    return $query->where('status', $status);
+            $statusValue = $status->value;
+            $count = $statusCounts->get($statusValue, 0);
+
+            $tabs[] = Tab::make(ucfirst($statusValue))
+                ->badge($count)
+                ->modifyQueryUsing(function ($query) use ($statusValue) {
+                    return $query->where('status', $statusValue);
                 });
         }
-
 
         return $tabs;
     }
