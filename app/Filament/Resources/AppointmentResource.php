@@ -171,7 +171,10 @@ class AppointmentResource extends Resource
                                 }),
 
                             Select::make('service_type')
-                                ->options(array_map(fn($case) => $case->value, Service::cases()))
+                                ->options(function () {
+                                    $data = array_map(fn($case) => $case->value, Service::cases());
+                                    return array_combine($data, $data);
+                                })
                                 ->searchable()
                                 ->required(),
 

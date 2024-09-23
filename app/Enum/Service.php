@@ -12,4 +12,5 @@ enum Service : String
     case ENGINE_DIAGNOSTICS = 'Engine Diagnostics';
     case TRANSMISSION_REPAIR = 'Transmission Repair';
     case OTHERS = 'Others';
+
 }

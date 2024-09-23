@@ -36,6 +36,6 @@ enum TimeSlot: string implements HasLabel
                 $availableSlots[$slot->name] = $slot->value;
             }
         }
-        return $availableSlots;
+        return array_combine($availableSlots, $availableSlots);
     }
 }
