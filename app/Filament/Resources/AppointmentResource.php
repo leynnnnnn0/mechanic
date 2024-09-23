@@ -343,12 +343,9 @@ class AppointmentResource extends Resource
                             $appointment->status = AppointmentStatus::CANCELLED;
                             $appointment->save();
 
-                            $recipient = auth()->user();
-                            $recipient->notify(new AppointmentStatusChanged($appointment));
-
                             // This is for the Filament flash message
                             Notification::make()
-                                ->title('Status updated successfully')
+                                ->title('Appointment Cancelled Successfully')
                                 ->success()
                                 ->send();
                         })
