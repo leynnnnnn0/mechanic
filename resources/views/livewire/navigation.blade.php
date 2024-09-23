@@ -1,4 +1,4 @@
-<div x-data="menu">
+<div lazy x-data="menu">
     <template x-if="show">
         <div class="min-h-screen w-full bg-blue-300 fixed inset-0">
             <button @click="toggle" class="absolute right-5 top-5">
