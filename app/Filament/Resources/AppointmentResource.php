@@ -353,7 +353,7 @@ class AppointmentResource extends Resource
                                 ->send();
                         })
                         ->color(AppointmentStatus::CANCELLED->getColor())
-                        ->visible(fn(Appointment $appointment): bool => $appointment->status !== 'completed')
+                        ->visible(fn(Appointment $appointment): bool => $appointment->status !== 'completed' && $appointment->status !== 'cancelled')
                         ->icon('heroicon-o-x-mark'),
                 ])
             ])
