@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\CarDetail;
 use App\Models\Appointment;
 use App\Models\Car;
 use App\Models\Customer;
+use App\Notifications\AppointmentStatusChanged;
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
@@ -47,6 +48,7 @@ use Random\RandomException;
 use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Support\Str;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 
 class AppointmentResource extends Resource
 {
@@ -315,6 +317,11 @@ class AppointmentResource extends Resource
                             ->action(function (Appointment $appointment) use ($status) {
                                 $appointment->status = $status->value;
                                 $appointment->save();
+                                Notification::make()
+                                    ->title('Status updated successfully')
+                                    ->success()
+                                    ->seconds(5)
+                                    ->send();
                             })
                             ->color(AppointmentStatus::CONFIRMED->getColor())
                             ->icon('heroicon-o-check')
@@ -322,6 +329,8 @@ class AppointmentResource extends Resource
                                 // What is the next status after this current status in array
                                 $values = array_map(fn($case) => $case->value, AppointmentStatus::cases());
                                 $index = array_search($appointment->status, $values);
+
+                                if ($appointment->status === 'cancelled') return false;
                                 return $status->value === AppointmentStatus::cases()[$index + 1]->value && $appointment->status !== 'completed';
                             });
                     }),
@@ -333,6 +342,15 @@ class AppointmentResource extends Resource
                         ->action(function (Appointment $appointment) {
                             $appointment->status = AppointmentStatus::CANCELLED;
                             $appointment->save();
+
+                            $recipient = auth()->user();
+                            $recipient->notify(new AppointmentStatusChanged($appointment));
+
+                            // This is for the Filament flash message
+                            Notification::make()
+                                ->title('Status updated successfully')
+                                ->success()
+                                ->send();
                         })
                         ->color(AppointmentStatus::CANCELLED->getColor())
                         ->visible(fn(Appointment $appointment): bool => $appointment->status !== 'completed')

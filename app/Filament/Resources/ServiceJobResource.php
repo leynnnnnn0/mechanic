@@ -26,6 +26,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Str;
 use Filament\Tables\Actions\ActionGroup;
 
@@ -209,6 +210,11 @@ class ServiceJobResource extends Resource
                             ->action(function (ServiceJob $appointment) use ($status) {
                                 $appointment->status = $status->value;
                                 $appointment->save();
+                                Notification::make()
+                                    ->title('Status Updated Successfully')
+                                    ->success()
+                                    ->seconds(5)
+                                    ->send();
                             })
                             ->hidden(function (ServiceJob $appointment) use ($status) {
                                 $values = array_map(fn($case) => $case->value, RepairStatus::cases());

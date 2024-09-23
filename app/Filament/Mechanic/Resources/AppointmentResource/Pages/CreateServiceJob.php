@@ -97,12 +97,7 @@ class CreateServiceJob extends Page
         return [
             Action::make('save')
                 ->label('Create Service Job')
-                ->submit('save')->successNotification(
-                    Notification::make()
-                        ->success()
-                        ->title('Service Job has been created')
-                        ->body('Service Job has been created')
-                ),
+                ->submit('save'),
         ];
     }
 
@@ -115,6 +110,11 @@ class CreateServiceJob extends Page
         $record = Appointment::find($this->record->id);
         $record->status = AppointmentStatus::WORK_STARTED;
         $record->save();
+        Notification::make()
+            ->title('Created successfully')
+            ->success()
+            ->seconds(5)
+            ->send();
         $this->redirect(AppointmentResource::getUrl('index'));
     }
 

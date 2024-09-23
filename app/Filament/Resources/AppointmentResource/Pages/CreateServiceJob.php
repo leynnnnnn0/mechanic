@@ -114,6 +114,11 @@ class CreateServiceJob extends Page
         $record = Appointment::find($this->record->id);
         $record->status = AppointmentStatus::WORK_STARTED;
         $record->save();
+        Notification::make()
+            ->title('Created successfully')
+            ->success()
+            ->seconds(5)
+            ->send();
         $this->redirect(AppointmentResource::getUrl('view', ['record' => $this->record]));
     }
 

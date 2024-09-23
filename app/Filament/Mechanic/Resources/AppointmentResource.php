@@ -28,6 +28,7 @@ use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -271,6 +272,11 @@ class AppointmentResource extends Resource
                             ->action(function (Appointment $appointment) use ($status) {
                                 $appointment->status = $status->value;
                                 $appointment->save();
+                                Notification::make()
+                                    ->title('Created successfully')
+                                    ->success()
+                                    ->seconds(5)
+                                    ->send();
                             })
                             ->color(AppointmentStatus::CONFIRMED->getColor())
                             ->icon('heroicon-o-check')
@@ -289,6 +295,11 @@ class AppointmentResource extends Resource
                         ->action(function (Appointment $appointment) {
                             $appointment->status = AppointmentStatus::CANCELLED;
                             $appointment->save();
+                            Notification::make()
+                                ->title('Appointment Cancelled successfully')
+                                ->success()
+                                ->seconds(5)
+                                ->send();
                         })
                         ->color(AppointmentStatus::CANCELLED->getColor())
                         ->visible(fn(Appointment $appointment): bool => $appointment->status !== 'completed')
