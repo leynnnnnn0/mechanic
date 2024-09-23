@@ -34,7 +34,7 @@
             @error('form.email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
-            <x-label>Phone number</x-label>
+            <x-label :isRequired="false">Phone number</x-label>
             <x-input wire:model="form.phone_number" />
             @error('form.phone_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
@@ -110,24 +110,24 @@
             @error('form.service_type') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
-            <x-label>Description</x-label>
-            <textarea wire:model="form.description" class="border border-black/10 rounded-lg h-10 px-3 resize-none" rows="2" cols="50">
+            <x-label :isRequired="false">Description</x-label>
+            <textarea wire:model="form.description" rows="4" class="p-2 border border-black/10 rounded-lg px-3 resize-none" rows="2" cols="50">
                             </textarea>
             @error('form.description') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
-            <x-label>Notes</x-label>
-            <textarea wire:model="form.additional_notes" class="border border-black/10 rounded-lg h-10 px-3 resize-none" rows="2" cols="50">
+            <x-label :isRequired="false">Notes</x-label>
+            <textarea wire:model="form.additional_notes" rows="4" class="p-2 border border-black/10 rounded-lg px-3 resize-none" rows="2" cols="50">
                             </textarea>
             @error('form.additional_notes') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div class="flex">
             <x-label>Is Emergency?</x-label>
             <div class="flex items-center gap-2">
-                <x-label>Yes</x-label>
+                <x-label :isRequired="false">Yes</x-label>
                 <input wire:model="form.is_emergency" value="1" type="radio" name="isEmergency">
 
-                <x-label>No</x-label>
+                <x-label :isRequired="false">No</x-label>
                 <input wire:model="form.is_emergency" value="0" type="radio" name="isEmergency">
             </div>
             @error('form.is_emergency') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -135,10 +135,10 @@
         <x-form-input-div class="flex">
             <x-label>Needs To be Towed?</x-label>
             <div class="flex items-center gap-2">
-                <x-label>Yes</x-label>
+                <x-label :isRequired="false">Yes</x-label>
                 <input wire:model="form.to_be_towed" value="1" type="radio" name="towing">
 
-                <x-label>No</x-label>
+                <x-label :isRequired="false">No</x-label>
                 <input wire:model="form.to_be_towed" value="0" type="radio" name="towing">
             </div>
             @error('form.to_be_towed') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -248,12 +248,18 @@
         @endif
         <div class="col-span-2 flex justify-end gap-2">
             @if($step > 1)
-            <button wire:click="previousStep" class="px-4 py-1 rounded-lg border border-gray-300 text-black font-bold text-sm">Back</button>
+            <button wire:loading.attr="disabled" wire:click="previousStep" class="px-4 py-1 rounded-lg border border-gray-300 text-black font-bold text-sm">Back</button>
             @endif
             @if($step < 4)
-                <button wire:click="nextStep" class="px-4 py-1 rounded-lg bg-blue-500 text-white font-bold text-sm">Next</button>
+                <button wire:loading.attr="disabled" wire:click="nextStep" class="px-4 py-1 rounded-lg bg-blue-500 text-white font-bold text-sm">
+                Next
+                <img wire:loading class="h-5" src="{{ Vite::asset('resources/images/loading.gif')}}" alt="loading...">
+                </button>
                 @else
-                <button wire:click="submit" class="px-4 py-1 rounded-lg bg-blue-500 text-white font-bold text-sm">Submit</button>
+                <button wire:loading.attr="disabled" wire:click="submit" class="px-4 py-1 rounded-lg bg-blue-500 text-white font-bold text-sm">
+                    Submit
+                    <img wire:loading class="h-5" src="{{ Vite::asset('resources/images/loading.gif')}}" alt="loading...">
+                </button>
                 @endif
         </div>
     </div>

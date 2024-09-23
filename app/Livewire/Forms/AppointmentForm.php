@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Enum\Regex;
 use App\Models\Customer;
 use Livewire\Form;
 
@@ -56,11 +57,12 @@ class AppointmentForm extends Form
             'first_name' => ['required'],
             'last_name' => ['required'],
             'email' => ['required', 'email'],
+            'phone_number' => ['sometimes', 'required', 'regex:' . Regex::PHONE_NUMBER->value],
             'street_address' => ['required'],
             'city' => ['required'],
             'barangay' => ['required'],
             'state_or_province' => ['required'],
-            'postal_code' => ['required'],
+            'postal_code' => ['required', 'numeric', 'min_digits:4', 'max_digits:4'],
         ];
     }
 
