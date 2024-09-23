@@ -9,6 +9,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Components\Tab;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ListServiceJobs extends ListRecords
 {
@@ -38,7 +39,7 @@ class ListServiceJobs extends ListRecords
             $statusValue = $status->value;
             $count = $statusCounts->get($statusValue, 0);
 
-            $tabs[] = Tab::make(ucfirst($statusValue))
+            $tabs[] = Tab::make(Str::headline($statusValue))
                 ->badge($count)
                 ->modifyQueryUsing(function ($query) use ($statusValue) {
                     return $query->where('status', $statusValue);
