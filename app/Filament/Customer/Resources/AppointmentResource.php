@@ -103,7 +103,10 @@ class AppointmentResource extends Resource
                             }),
 
                         Select::make('service_type')
-                            ->options(Service::class)
+                            ->options(function () {
+                                $data = array_map(fn($case) => $case->value, Service::cases());
+                                return array_combine($data, $data);
+                            })
                             ->required(),
 
                         Textarea::make('description')

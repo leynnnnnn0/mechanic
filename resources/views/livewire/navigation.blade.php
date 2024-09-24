@@ -27,8 +27,13 @@
             </div>
         </section>
         <section class="space-x-3 lg:block hidden">
+            @if(auth('customer')->check())
+            <a href="/customer" class="bg-blue-500 rounded-lg px-5 py-1 text-md text-white font-medium" wire:navigate>Dashboard</a>
+            @else
             <a href="/register" class="text-md font-medium" wire:navigate>Register</a>
             <a href="/customer/login" class="bg-blue-500 rounded-lg px-5 py-1 text-md text-white font-medium" wire:navigate>Login</a>
+            @endif
+
         </section>
         <section class="lg:hidden">
             <button @click="toggle">

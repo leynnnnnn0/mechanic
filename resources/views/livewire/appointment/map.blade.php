@@ -129,9 +129,8 @@
 
                 hideLoading();
             }).catch(error => {
-                console.log(error);
                 hideLoading();
-                alert('An error occurred while loading the map. Please try again.');
+                document.getElementById('distance-info').innerHTML = '<h1 class="text-red-500">Could not find the estimated ditance and time</h1>';
             });
     }
 

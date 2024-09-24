@@ -9,9 +9,15 @@
                <h1 class="lg:text-5xl font-bold text-blue-500 sm:text-4xl text-xl">AUTO MAINTENANCE,<br /> SERVICE & REPAIR</h1>
                <p class="lg:text-md sm:text-sm text-xs">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore sit libero quo rerum quasi atque consectetur dolorum saepe reiciendis, modi deleniti voluptate aspernatur eveniet? Nesciunt assumenda laborum delectus laboriosam odio?</p>
                <div>
+                    @if(auth('customer')->check())
+                    <a href="/customer/appointments/create" class="cursor-pointer z-10 px-4 py-1 lg:text-lg bg-blue-500 font-bold rounded-sm text-white sm:text-lg  text-sm" wire:navigate>
+                         Book an appointment
+                    </a>
+                    @else
                     <a href="/appointment" class="cursor-pointer z-10 px-4 py-1 lg:text-lg bg-blue-500 font-bold rounded-sm text-white sm:text-lg  text-sm" wire:navigate>
                          Book an appointment
                     </a>
+                    @endif
                </div>
           </section>
           <section class="absolute bottom-0">

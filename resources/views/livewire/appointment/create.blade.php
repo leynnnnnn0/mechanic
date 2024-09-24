@@ -17,7 +17,7 @@
     </div>
 
     <div class="grid grid-cols-2 p-5 gap-5 w-full">
-        @if($step === 3)
+        @if($step === 1)
         <x-form-input-div>
             <x-label>First Name</x-label>
             <x-input wire:model="form.first_name" />
@@ -99,7 +99,7 @@
             @error('form.color') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
 
-        @elseif($step === 1)
+        @elseif($step === 3)
         <x-form-input-div class="col-span-2">
             <x-label>Service Type</x-label>
             <x-select wire:model="form.service_type">

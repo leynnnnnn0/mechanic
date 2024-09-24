@@ -1,27 +1,22 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Customer\Resources;
 
-use App\Filament\Resources\CustomerAccountResource\Pages;
-use App\Models\CustomerAccount;
+use App\Filament\Customer\Resources\CustomerResource\Pages;
+use App\Filament\Customer\Resources\CustomerResource\Pages\MyDetails;
+use App\Filament\Customer\Resources\CustomerResource\Pages\ViewCustomerDetail;
+use App\Models\Customer;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class CustomerAccountResource extends Resource
+class CustomerResource extends Resource
 {
-
-    protected static ?string $model = CustomerAccount::class;
+    protected static ?string $model = Customer::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'People';
-
-    public static function canCreate(): bool
-    {
-        return false;
-    }
+    protected static ?string $navigationLabel = "My Details";
 
     public static function form(Form $form): Form
     {
@@ -35,15 +30,14 @@ class CustomerAccountResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('customer.full_name')->label('Customer'),
-                TextColumn::make('username'),
-                TextColumn::make('customer.email')
+                //
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -59,13 +53,13 @@ class CustomerAccountResource extends Resource
         ];
     }
 
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCustomerAccounts::route('/'),
-            // 'create' => Pages\CreateCustomerAccount::route('/create'),
-            // 'edit' => Pages\EditCustomerAccount::route('/{record}/edit'),
+            'index' => Pages\ListCustomers::route('/'),
+            'create' => Pages\CreateCustomer::route('/create'),
+            'edit' => Pages\EditCustomer::route('/{record}/edit'),
+            'view' => MyDetails::route('/my-details')
         ];
     }
 }
