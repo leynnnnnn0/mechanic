@@ -10,8 +10,8 @@ class CarDetail extends Controller
 {
     public static function getCarYears($make = '', $model = '')
     {
-        $response = Http::get("https://carapi.app/api/years?make=$make&model=$model");
         try {
+            $response = Http::get("https://carapi.app/api/years?make=$make&model=$model");
             $data = $response->json();
             return array_combine($data, $data);
         } catch (Exception $e) {

@@ -145,7 +145,7 @@
         </x-form-input-div>
         <x-form-input-div>
             <x-label>Appointment Date</x-label>
-            <x-input type="date" wire:model="form.appointment_date" />
+            <x-input wire:change="getAvailableTime" type="date" wire:model.live="form.appointment_date" />
             @error('form.appointment_date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div class="col-span-2">
@@ -154,6 +154,11 @@
                 @foreach ($timeSlots as $timeSlot)
                 <x-time-button active="{{$timeSlot === $appointmentTime}}" wire:click="setTime('{{$timeSlot}}')">{{$timeSlot}}</x-time-button>
                 @endforeach
+                @if(!$timeSlots)
+                <h1 class="text-red-500 col-span-4">
+                    No time slot available please try different date.
+                </h1>
+                @endif
 
 
             </section>

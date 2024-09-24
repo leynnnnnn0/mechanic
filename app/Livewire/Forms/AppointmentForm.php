@@ -4,6 +4,7 @@ namespace App\Livewire\Forms;
 
 use App\Enum\Regex;
 use App\Models\Customer;
+use Carbon\Carbon;
 use Livewire\Form;
 
 class AppointmentForm extends Form
@@ -46,7 +47,7 @@ class AppointmentForm extends Form
             'service_type' => ['required'],
             'is_emergency' => ['required'],
             'to_be_towed' => ['required'],
-            'appointment_date' => ['required'],
+            'appointment_date' => ['required', 'after_or_equal:' . Carbon::today()],
             'appointment_time' => ['required']
         ];
     }
