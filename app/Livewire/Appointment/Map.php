@@ -4,6 +4,7 @@ namespace App\Livewire\Appointment;
 
 use Exception;
 use Illuminate\Support\Facades\Http;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Map extends Component
@@ -17,13 +18,23 @@ class Map extends Component
 
     public function mount($form)
     {
+        $this->formData = $form;
         $this->apiKey = env('GEOAPIFY_API_KEY');
         $this->mechanicAddress = [
             'latitude' => 14.403519,
             'longitude' => 120.880015,
             'address' => 'Mechanic Place, 4107 Cavite, Philippines'
         ];
-        $this->address = "$form->street_address $form->barangay $form->city $form->state_or_province $form->postal_code";
+        $this->from = [
+            'latitude' => 14.403519,
+            'longitude' => 120.880015,
+            'address' => 'Lavanya Square, 4107 Cavite, Philippines'
+        ];
+    }
+    #[On('updateMap')]
+    public function getDistance($form)
+    {
+        $this->address = $form['street_address'] . ' ' . $form['barangay'] . ' ' . $form['city'] . ' ' . $form['state_or_province'] . ' ' .  $form['postal_code'];
         $url = "https://api.geoapify.com/v1/geocode/search?text=$this->address&format=json&apiKey=$this->apiKey";
         try {
             $response = Http::get($url);

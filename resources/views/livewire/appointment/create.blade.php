@@ -41,22 +41,22 @@
 
         <x-form-input-div class="col-span-2">
             <x-label>Street Address</x-label>
-            <x-input wire:model.live="form.street_address" />
+            <x-input wire:model="form.street_address" />
             @error('form.street_address') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
             <x-label>City</x-label>
-            <x-input wire:model.live="form.city" />
+            <x-input wire:keydown.throttle.150ms="trackLocation" wire:model="form.city" />
             @error('form.city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
             <x-label>Barangay</x-label>
-            <x-input wire:model.live="form.barangay" />
+            <x-input wire:model="form.barangay" />
             @error('form.barangay') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>
             <x-label>State or Provice</x-label>
-            <x-input wire:model.live="form.state_or_province" />
+            <x-input wire:keydown.throttle.150ms="trackLocation" wire:model="form.state_or_province" />
             @error('form.state_or_province') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
         <x-form-input-div>

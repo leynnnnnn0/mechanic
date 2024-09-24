@@ -2,9 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Enum\Service;
-use App\Enum\TimeSlot;
-use App\Http\Controllers\Api\CarDetail;
+
 use Livewire\Attributes\On;
 use Livewire\Component;
 

@@ -1,6 +1,14 @@
-<div x-data="map" class="h-[300px] w-full" wire:ignore>
-    <div class="h-full w-full" id="my-map">
-
+<div x-data="map" class="relative h-[300px] w-full" wire:ignore>
+    <div class="h-full w-full" id="my-map"></div>
+    <div id="distance-info" class="absolute top-2 left-2 bg-white p-3 rounded-lg shadow-md z-[1000] text-sm font-semibold"></div>
+    <div id="loading-overlay" class="absolute inset-0 bg-gray-200 bg-opacity-75 flex items-center justify-center z-[2000]">
+        <div class="text-center">
+            <svg class="animate-spin h-10 w-10 text-blue-500 mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-blue-600 font-semibold">Loading map...</span>
+        </div>
     </div>
 </div>
 
@@ -9,9 +17,11 @@
         Alpine.data('map', () => ({
             customerAddress: JSON.parse('<?php echo json_encode($from) ?>'),
             init() {
-                Livewire.on('updateMap', (param) => {
-                    this.customerAddress = param[0];
-                    initMap(this.customerAddress);
+                Livewire.on('updateMap', () => {
+                    showLoading();
+                })
+                Livewire.on('locationLoaded', (param) => {
+                    initMap(param[0]);
                 })
                 initMap(this.customerAddress)
             }
@@ -20,7 +30,16 @@
 
     let map;
 
+    function showLoading() {
+        document.getElementById('loading-overlay').style.display = 'flex';
+    }
+
+    function hideLoading() {
+        document.getElementById('loading-overlay').style.display = 'none';
+    }
+
     function initMap(customerAddress) {
+
         if (map) {
             map.remove();
         }
@@ -45,7 +64,6 @@
         const toWaypoint = [mechanicAddress.latitude, mechanicAddress.longitude];
         const toWaypointMarker = L.marker(toWaypoint).addTo(map).bindPopup(mechanicAddress.address);
 
-
         const turnByTurnMarkerStyle = {
             radius: 5,
             fillColor: "#fff",
@@ -55,46 +73,67 @@
             fillOpacity: 1
         }
 
+        fetch(`https://api.geoapify.com/v1/routing?waypoints=${fromWaypoint.join(',')}|${toWaypoint.join(',')}&mode=drive&apiKey=${myAPIKey}`)
+            .then(res => res.json())
+            .then(result => {
+                const distance = result.features[0].properties.distance / 1000;
+                const time = result.features[0].properties.time / 60; // Convert seconds to minutes
 
-        fetch(`https://api.geoapify.com/v1/routing?waypoints=${fromWaypoint.join(',')}|${toWaypoint.join(',')}&mode=drive&apiKey=${myAPIKey}`).then(res => res.json()).then(result => {
+                // Display distance and time
+                const distanceInfo = document.getElementById('distance-info');
+                distanceInfo.innerHTML = `
+            <strong>Distance:</strong> ${distance.toFixed(2)} km<br>
+            <strong>Estimated Time:</strong> ${Math.round(time)} minutes
+        `;
 
-            L.geoJSON(result, {
-                style: (feature) => {
-                    return {
-                        color: "rgba(20, 137, 255, 0.7)",
-                        weight: 5
-                    };
-                }
-            }).bindPopup((layer) => {
-                return `${layer.feature.properties.distance} ${layer.feature.properties.distance_units}, ${layer.feature.properties.time}`
-            }).addTo(map);
-
-            const turnByTurns = [];
-            result.features.forEach(feature => feature.properties.legs.forEach((leg, legIndex) => leg.steps.forEach(step => {
-                const pointFeature = {
-                    "type": "Feature",
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": feature.geometry.coordinates[legIndex][step.from_index]
-                    },
-                    "properties": {
-                        "instruction": step.instruction.text
+                L.geoJSON(result, {
+                    style: (feature) => {
+                        return {
+                            color: "rgba(20, 137, 255, 0.7)",
+                            weight: 5
+                        };
                     }
-                }
-                turnByTurns.push(pointFeature);
-            })));
+                }).bindPopup((layer) => {
+                    return `${layer.feature.properties.distance} ${layer.feature.properties.distance_units}, ${layer.feature.properties.time}`
+                }).addTo(map);
 
-            L.geoJSON({
-                type: "FeatureCollection",
-                features: turnByTurns
-            }, {
-                pointToLayer: function(feature, latlng) {
-                    return L.circleMarker(latlng, turnByTurnMarkerStyle);
-                }
-            }).bindPopup((layer) => {
-                return `${layer.feature.properties.instruction}`
-            }).addTo(map);
+                const turnByTurns = [];
+                result.features.forEach(feature => feature.properties.legs.forEach((leg, legIndex) => leg.steps.forEach(step => {
+                    const pointFeature = {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": feature.geometry.coordinates[legIndex][step.from_index]
+                        },
+                        "properties": {
+                            "instruction": step.instruction.text
+                        }
+                    }
+                    turnByTurns.push(pointFeature);
+                })));
 
-        }, error => console.log(err));
+                L.geoJSON({
+                    type: "FeatureCollection",
+                    features: turnByTurns
+                }, {
+                    pointToLayer: function(feature, latlng) {
+                        return L.circleMarker(latlng, turnByTurnMarkerStyle);
+                    }
+                }).bindPopup((layer) => {
+                    return `${layer.feature.properties.instruction}`
+                }).addTo(map);
+
+                // Fit the map to show both markers
+                const group = new L.featureGroup([fromWaypointMarker, toWaypointMarker]);
+                map.fitBounds(group.getBounds().pad(0.1));
+
+                hideLoading();
+            }).catch(error => {
+                console.log(error);
+                hideLoading();
+                alert('An error occurred while loading the map. Please try again.');
+            });
     }
+
+    initMap(JSON.parse('<?php echo json_encode($from) ?>'));
 </script>

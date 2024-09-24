@@ -35,7 +35,7 @@
           <h1 class="text-3xl font-bold text-blue-500 text-center">
                Our Trusted Mechanics
           </h1>
-          <div class="lg:grid xl:grid-cols-5 lg:grid-cols-3 flex items-center justify-center gap-5 flex-col">
+          <div class="lg:grid xl:grid-cols-5 lg:grid-cols-3 gap-5">
                <img src="{{ Vite::asset('resources/images/mec1.png')}}" alt="">
                <img src="{{ Vite::asset('resources/images/mec2.png')}}" alt="">
                <img src="{{ Vite::asset('resources/images/mec3.png')}}" alt="">

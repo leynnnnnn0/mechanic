@@ -17,6 +17,13 @@ class Create extends Component
     public array $timeSlots;
     public int $step = 1;
 
+    public function trackLocation()
+    {
+        if ($this->form->city && $this->form->state_or_province) {
+            $this->dispatch('updateMap', $this->form);
+        }
+    }
+
     public function previousStep()
     {
         $this->step -= 1;
