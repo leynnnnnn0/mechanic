@@ -6,6 +6,8 @@ use App\Enum\Service;
 use App\Enum\TimeSlot;
 use App\Http\Controllers\Api\CarDetail;
 use App\Livewire\Forms\AppointmentForm;
+use Carbon\Carbon;
+use Filament\Forms\Components\DatePicker;
 use Livewire\Component;
 
 class Create extends Component
@@ -16,6 +18,7 @@ class Create extends Component
     public array $services;
     public array $timeSlots;
     public int $step = 1;
+    public string $appointmentTime;
 
     public function trackLocation()
     {
@@ -48,17 +51,29 @@ class Create extends Component
     {
         $this->makes = CarDetail::getCarMakes();
         $this->services = Service::cases();
-        $this->timeSlots = TimeSlot::cases();
+        $this->timeSlots = TimeSlot::getAvailableOptions();
         $this->years = CarDetail::getCarYears();
+        $this->form->appointment_date =  Carbon::today()->format('Y-m-d');
     }
     public function render()
     {
         return view('livewire.appointment.create');
     }
 
+    public function getAvailableTime()
+    {
+        $this->timeSlots = TimeSlot::getAvailableOptions($this->form->appointment_date);
+    }
+
     public function submit()
     {
         $appointmentDetails = $this->form->store();
         $this->dispatch('appointmentCreated', $appointmentDetails);
+    }
+
+    public function setTime($time)
+    {
+        $this->form->appointment_time = $time;
+        $this->appointmentTime = $time;
     }
 }

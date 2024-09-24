@@ -17,7 +17,7 @@
     </div>
 
     <div class="grid grid-cols-2 p-5 gap-5 w-full">
-        @if($step === 1)
+        @if($step === 3)
         <x-form-input-div>
             <x-label>First Name</x-label>
             <x-input wire:model="form.first_name" />
@@ -99,7 +99,7 @@
             @error('form.color') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
 
-        @elseif($step === 3)
+        @elseif($step === 1)
         <x-form-input-div class="col-span-2">
             <x-label>Service Type</x-label>
             <x-select wire:model="form.service_type">
@@ -148,13 +148,15 @@
             <x-input type="date" wire:model="form.appointment_date" />
             @error('form.appointment_date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
-        <x-form-input-div>
+        <x-form-input-div class="col-span-2">
             <x-label>Appointment Time</x-label>
-            <x-select wire:model="form.appointment_time">
+            <section class="w-full grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
                 @foreach ($timeSlots as $timeSlot)
-                <option value="{{ $timeSlot}}">{{ $timeSlot }}</option>
+                <x-time-button active="{{$timeSlot === $appointmentTime}}" wire:click="setTime('{{$timeSlot}}')">{{$timeSlot}}</x-time-button>
                 @endforeach
-            </x-select>
+
+
+            </section>
             @error('form.appointment_time') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </x-form-input-div>
 
