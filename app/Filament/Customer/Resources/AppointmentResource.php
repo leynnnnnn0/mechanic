@@ -35,6 +35,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
+use Filament\Tables\Filters\Filter;
 
 class AppointmentResource extends Resource
 {
@@ -189,7 +190,10 @@ class AppointmentResource extends Resource
                 TextColumn::make('appointment_time'),
             ])
             ->filters([
-                //
+                ...collect(AppointmentStatus::cases())->map(function ($case) {
+                    return Filter::make($case->value)
+                        ->query(fn(Builder $query): Builder => $query->where('status', $case->value));
+                })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
