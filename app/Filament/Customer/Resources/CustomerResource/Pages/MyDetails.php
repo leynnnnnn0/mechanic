@@ -8,6 +8,7 @@ use Filament\Resources\Pages\Page;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Pages\SubNavigationPosition;
 
 class MyDetails extends Page
 {
@@ -39,8 +40,8 @@ class MyDetails extends Page
                     TextEntry::make('postal_code'),
                 ])->columns(2),
                 Section::make('Account Details')->schema([
-                    TextEntry::make('account.username'),
-                    TextEntry::make('account.password')->formatStateUsing(fn($state) => '*************')
+                    TextEntry::make('account.username')->label('Username'),
+                    TextEntry::make('account.password')->label('Password')->formatStateUsing(fn($state) => '*************')
                 ])->columns(2)
             ]);
     }

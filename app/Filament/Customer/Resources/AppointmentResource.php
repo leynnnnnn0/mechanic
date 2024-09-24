@@ -6,6 +6,7 @@ use App\Enum\AppointmentStatus;
 use App\Enum\Service;
 use App\Enum\TimeSlot;
 use App\Filament\Customer\Resources\AppointmentResource\Pages;
+use App\Filament\Customer\Resources\AppointmentResource\Pages\EditAppointment;
 use App\Filament\Customer\Resources\AppointmentResource\Pages\ViewAppointmentDetails;
 use App\Http\Controllers\Api\CarDetail;
 use App\Models\Appointment;
@@ -33,6 +34,7 @@ use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\Page;
 
 class AppointmentResource extends Resource
 {
@@ -226,6 +228,13 @@ class AppointmentResource extends Resource
             'edit' => Pages\EditAppointment::route('/{record}/edit'),
             'view' => ViewAppointmentDetails::route('/{record}/appointment')
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            EditAppointment::class
+        ]);
     }
 
     public static function getEloquentQuery(): Builder
