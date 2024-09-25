@@ -1,13 +1,12 @@
 <div class="relative">
-     @if(!request()->session()->get('acknowledged'))
-     <x-credentials wire:click="acknowledge" />
-     @endif
-
      <!-- Nav bar -->
      <section class="fixed top-0 z-50 w-full">
           <livewire:navigation />
      </section>
      <!-- Home Page -->
+     @if(!request()->session()->get('acknowledged'))
+     <x-credentials wire:click="acknowledge" />
+     @endif
      <section class="2xl:px-[400px] xl:px-[250px] md:px-[100px] relative flex items-center justify-center min-h-screen px-10">
           <section class="space-y-5 mb-16">
                <h1 class="lg:text-5xl font-bold text-blue-500 sm:text-4xl text-xl">AUTO MAINTENANCE,<br /> SERVICE & REPAIR</h1>
