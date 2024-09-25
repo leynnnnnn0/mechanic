@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum Specialization : string
+enum Specialization: string
 {
     case AUTOMOTIVE_TECHNICIAN = 'Automotive Technician';
     case DIESEL_MECHANIC = 'Diesel Mechanic';
@@ -14,4 +14,10 @@ enum Specialization : string
     case MOTORCYCLE_MECHANIC = 'Motorcycle Mechanic';
     case HYBRID_ELECTRIC_VEHICLE_TECHNICIAN = 'Hybrid and Electric Vehicle Technician';
     case COLLISION_REPAIR_SPECIALIST = 'Collision Repair Specialist';
+
+    public static function getSpecializations()
+    {
+        $data = array_map(fn($case) => $case->value, self::cases());
+        return array_combine($data, $data);
+    }
 }

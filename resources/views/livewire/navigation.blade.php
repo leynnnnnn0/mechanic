@@ -1,6 +1,6 @@
-<div lazy x-data="menu">
+<div lazy x-data="menu" class="z-[3000]">
     <template x-if="show">
-        <div class="min-h-screen w-full bg-blue-300 fixed inset-0">
+        <div class="min-h-screen w-full bg-blue-300 fixed inset-0 z-[4000]">
             <button @click="toggle" class="absolute right-5 top-5">
                 <x-bi-x-circle style="color: white;" />
             </button>
