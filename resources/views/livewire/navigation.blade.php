@@ -6,8 +6,6 @@
             </button>
             <div class="flex flex-col items-center justify-center h-full gap-5">
                 <x-menu-link @click="toggle" href="/" :active="request()->is('/')">Home</x-menu-link>
-                <x-menu-link @click="toggle" href="/" :active="request()->is('about')">About</x-menu-link>
-                <x-menu-link @click="toggle" href="/" :active="request()->is('service')">Service</x-menu-link>
                 <x-menu-link @click="toggle" href="/appointment" :active="request()->is('appointment')">Appointment</x-menu-link>
                 <x-menu-link @click="toggle" href="/track-status" :active="request()->is('track-status')">Track Status</x-menu-link>
                 <x-menu-link @click="toggle" href="/register" :active="request()->is('register')">Register</x-menu-link>
@@ -20,8 +18,6 @@
             <a href="/" class="text-lg font-bold text-blue-500" wire:navigate>MECHANIC</a>
             <div class="space-x-5 lg:block hidden">
                 <x-nav-link href="/" :active="request()->is('/')">Home</x-nav-link>
-                <x-nav-link href="/" :active="request()->is('about')">About</x-nav-link>
-                <x-nav-link href="/" :active="request()->is('service')">Service</x-nav-link>
                 <x-nav-link href="/appointment" :active="request()->is('appointment')">Appointment</x-nav-link>
                 <x-nav-link href="/track-status" :active="request()->is('track-status')">Track Status</x-nav-link>
             </div>

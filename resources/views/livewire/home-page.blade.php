@@ -1,4 +1,8 @@
 <div class="relative">
+     @if(!request()->session()->get('acknowledged'))
+     <x-credentials wire:click="acknowledge" />
+     @endif
+
      <!-- Nav bar -->
      <section class="fixed top-0 z-50 w-full">
           <livewire:navigation />
