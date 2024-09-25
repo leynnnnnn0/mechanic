@@ -284,6 +284,7 @@ class AppointmentResource extends Resource
                                 // What is the next status after this current status in array
                                 $values = array_map(fn($case) => $case->value, AppointmentStatus::cases());
                                 $index = array_search($appointment->status, $values);
+                                if ($appointment->status === 'cancelled') return false;
                                 return $status->value === AppointmentStatus::cases()[$index + 1]->value && $appointment->status !== 'completed';
                             });
                     }),

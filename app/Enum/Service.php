@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum Service : String
+enum Service: String
 {
     case OIL_CHANGE = 'Oil Change';
     case BRAKE_REPAIR = 'Brake Repair';
@@ -13,4 +13,9 @@ enum Service : String
     case TRANSMISSION_REPAIR = 'Transmission Repair';
     case OTHERS = 'Others';
 
+    public static function getServices()
+    {
+        $data = array_map(fn($case) => $case->value, self::cases());
+        return array_combine($data, $data);
+    }
 }

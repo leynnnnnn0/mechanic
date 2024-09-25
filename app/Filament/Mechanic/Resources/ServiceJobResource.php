@@ -9,6 +9,7 @@ use App\Filament\Mechanic\Resources\ServiceJobResource\Pages;
 use App\Filament\Mechanic\Resources\ServiceJobResource\RelationManagers;
 use App\Models\ServiceJob;
 use Carbon\Carbon;
+use Faker\Provider\ar_EG\Payment;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
@@ -51,14 +52,11 @@ class ServiceJobResource extends Resource
                     TextInput::make('mechanic_id'),
 
                     Select::make('service_type')
-                        ->options(function () {
-                            $data = array_map(fn($case) => $case->value, Service::cases());
-                            return array_combine($data, $data);
-                        })
+                        ->options(Service::getServices())
                         ->required(),
 
                     ToggleButtons::make('status')
-                        ->options(array_map(fn($case): mixed => Str::headline($case->value), RepairStatus::cases()))
+                        ->options(RepairStatus::getStatus())
                         ->default('scheduled')
                         ->inline()
                         ->required()
@@ -76,8 +74,8 @@ class ServiceJobResource extends Resource
                     TextInput::make('estimated_cost'),
                     TextInput::make('final_cost'),
                     Select::make('payment_status')
-                        ->options(array_map(fn($case): mixed => Str::headline(value: $case->value), PaymentStatus::cases()))
-                        ->default('awaiting_payment')
+                        ->options(PaymentStatus::getPaymentStatus())
+                        ->default('Awaiting Payment')
                         ->required(),
                 ])->columns(2),
             ]);

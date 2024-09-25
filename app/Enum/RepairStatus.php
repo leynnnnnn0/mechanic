@@ -15,6 +15,12 @@ enum RepairStatus: string implements HasLabel
     case READY_FOR_PICKUP = 'ready_for_pickup';
     case DONE = 'done';
 
+    public static function getStatus()
+    {
+        $data = array_map(fn($case) => $case->value, self::cases());
+        return array_combine($data, $data);
+    }
+
 
     public function getLabel(): ?string
     {
